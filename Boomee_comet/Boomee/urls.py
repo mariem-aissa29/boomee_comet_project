@@ -17,13 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from testApp import views
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    path("", RedirectView.as_view(url='/login/', permanent=True)),
     path("admin/", admin.site.urls),
     path('signup/',views.SignupPage,name='signup'),
-    path('login/',views.loginPage,name='login'),
+    path("login/",views.loginPage,name='login'),
     path('home/',views.homePage,name='home'),
     path('logout/',views.logoutPage,name='logout'),
     path('report/',views.reportPage,name='report'),
-
 ]
