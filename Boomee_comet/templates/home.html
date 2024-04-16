@@ -1,0 +1,520 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic");
+
+body {
+  font-size: 14px;
+  font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #666;
+  background: #f2f2f2;
+  /*-webkit-text-size-adjust: 100%;*/
+  -moz-osx-font-smoothing: grayscale;
+  /*-webkit-font-smoothing: antialiased;*/ }
+
+a {
+  text-decoration: none; }
+  a:hover {
+    text-decoration: none; }
+
+/* ------------ Sidenav CSS ------------- */
+#sidenav {
+  position: fixed;
+  width: 300px;
+  height: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99999;
+  background: #ffffff; }
+
+    #sidenav.open {
+       width: 78px;
+    }
+
+    #sidenav.open .sidenav .logo a.nav-icon{
+      transition-delay: 0s;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #sidenav .logo {
+      width: 100%;
+      padding: 2px 30px;
+      background: #ffffff;
+      display: block; }
+
+    #sidenav .logo a {
+      color: #dadada;
+      font-size: 30px; }
+
+    #sidenav .logo a.nav-icon {
+      margin-left: 230px;
+      color: red; }
+
+    #sidenav .menu {
+      position: static;
+      }
+
+    #sidenav .menu ul {
+      list-style: none;
+      background: #ffffff;
+      padding: 10% 0;
+      margin: 0;
+      }
+
+    #sidenav .menu ul li {
+        padding: 6px 14%;
+        }
+    #sidenav .menu ul li.active {
+        background: #edebeb;
+        border-left: solid 5px red;
+        }
+    #sidenav .menu ul li a {
+        font-size: 22px;
+        color: #FE5837;
+        font-weight: 500;
+        display: block;
+        }
+    #sidenav .menu ul li a:hover {
+        font-weight: 550;
+        color: red;
+        }
+    #sidenav .menu ul li a.logout:hover {
+        color: red;
+        }
+
+
+@media (max-width: 768px) {
+  #sidenav {
+    width: 100%;
+    height: 60px;
+    background: none; }
+  #sidenav .logo {
+     padding: 10px 20px;
+     }
+  #sidenav .logo a {
+      font-size: 20px;
+      }
+  #sidenav .logo a.nav-icon {
+          display: inline;
+          }
+    #sidenav .menu {
+      display: none; }
+      #sidenav .menu.open {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: -1;
+        display: block !important; }
+      #sidenav .menu ul {
+        border-top: solid 1px #333; }
+        #sidenav .menu ul li {
+          padding: 6px 5%; } }
+
+           .btn-outline-primary {
+            color: #FE5837; /* Couleur ajustée pour le lien */
+            border-color: #FE5837; /* Couleur ajustée pour le lien */
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff; /* Couleur ajustée pour le lien au survol */
+            border-color: #FE5837; /* Couleur ajustée pour le lien au survol */
+            background-color: #FE5837;
+        }
+
+         .btn-primary.disabled,
+        .btn-primary:disabled {
+            color: #fff;
+            background-color: #FE5837;
+            border-color: #FE5837;
+        }
+
+        .btn-primary:not(:disabled):not(.disabled):active,
+        .btn-primary:not(:disabled):not(.disabled).active,
+        .show > .btn-primary.dropdown-toggle {
+            color: #fff;
+            background-color: #5a23c8;
+            border-color: #5a23c8;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #FE5837;
+            border-color: #FE5837;
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #464743;
+            border-color: #464743;
+        }
+
+        .btn-primary:focus,
+        .btn-primary.focus {
+            box-shadow: 0 0 0 0.25rem rgba(254, 88, 55, 0.5);
+        }
+
+        #spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Higher z-index */
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            z-index: 9999; /* Ensure it's above other elements except spinner */
+        }
+
+         .file-field {
+            margin-bottom: 10px;
+        }
+
+        .file-field label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .file-field input[type=file] {
+            margin-top: 5px;
+        }
+
+        .custom-file-input {
+            margin-top: 5px;
+        }
+
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Poppins", sans-serif;
+        }
+
+        .container {
+          height: 100vh;
+          #width: 100%;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          background-color: #fcfcfc;
+        }
+
+        .card {
+          border-radius: 10px;
+          box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+          width: 400px;
+          height: 260px;
+          background-color: #ffffff;
+          padding: 10px 30px 40px;
+        }
+
+        .card h3 {
+          font-size: 22px;
+          font-weight: 600;
+
+        }
+
+        .drop_box {
+          margin: 10px 0;
+          padding: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          border: 3px dotted #a3a3a3;
+          border-radius: 5px;
+        }
+
+        .drop_box h4 {
+          font-size: 16px;
+          font-weight: 400;
+          color: #2e2e2e;
+        }
+
+        .drop_box p {
+          margin-top: 10px;
+          margin-bottom: 20px;
+          font-size: 12px;
+          color: #a3a3a3;
+        }
+
+
+        .form input {
+          margin: 10px 0;
+          width: 100%;
+          background-color: #e2e2e2;
+          border: none;
+          outline: none;
+          padding: 12px 20px;
+          border-radius: 4px;
+        }
+        .alert_danger {
+          padding: 20px;
+          background-color: #f44336;
+          color: white;
+        }
+
+        .alert_success {
+          padding: 20px;
+          background-color: #22bb33;
+          color: white;
+        }
+
+        .closebtn {
+          margin-left: 15px;
+          color: white;
+          font-weight: bold;
+          float: right;
+          font-size: 22px;
+          line-height: 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .closebtn:hover {
+          color: black;
+        }
+
+    </style>
+</head>
+<body>
+  <div id="overlay"></div>
+  <div class="app">
+    <div id="sidenav">
+      <div class="wrapper">
+        <div class="logo">
+			<img src="../static/comet_logo_min.png" alt="Comet Logo" class="logo" role="img" aria-label="Comet">
+        </div>
+         <hr>
+        <div class="menu">
+          <ul>
+            <li ><a href="/report">Dashboard</a></li>
+            <li></li>
+            <li class="active"><a href="/home">Upload Files</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="d-flex flex-wrap align-items-center justify-content-center
+                    justify-content-md-between py-3 mb-4 border-bottom">
+      <div class="col-md-3 mb-2 mb-md-0">
+      </div>
+
+
+      <div class="col-md-3 text-end">
+        <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
+      </div>
+    </header>
+        <div class="content" style="margin-left: 330px;">
+
+
+            {% if success_messages %}
+            {% for success_message in success_messages %}
+                <br>
+                <div class="alert_success">
+                  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                  {{ success_message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+
+            {% if error_messages %}
+              {% for error_type, error_message in error_messages.items %}
+                <br>
+                <div class="alert_danger">
+                  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                  {{ error_message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form id="uploadForm" action="{% url 'home' %}" method="POST" enctype="multipart/form-data" onsubmit="showSpinner(event)">
+                <button type="submit" class="btn btn-primary"> Upload Files</button>
+                    {% csrf_token %}
+
+                    <div class="drop_box">
+                        <header>
+                            <h4>Upload invoices file:</h4>
+                        </header>
+
+                        <input type="file" id="upload-invoices"  name="upload-invoices" accept=".csv" hidden/>
+                        <label for="upload-invoices" style="display: inline-block;
+                                                  background-color: rgb(251 146 60);
+                                                  color: white;
+                                                  padding: 0.5rem;
+                                                  font-family: sans-serif;
+                                                  border-radius: 0.3rem;
+                                                  cursor: pointer;
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+
+                        <span id="file-chosen-invoices" style="margin-left: 0.3rem;
+                                                      font-family: sans-serif;">No file chosen</span>
+
+                    </div>
+
+                    <div class="drop_box">
+                            <header>
+                            <h4>Upload Summary File:</h4>
+                        </header>
+
+                        <input type="file" id="upload-summary" name="upload-summary" hidden/>
+                        <label for="upload-summary" style="display: inline-block;
+                                                  background-color: rgb(251 146 60);
+                                                  color: white;
+                                                  padding: 0.5rem;
+                                                  font-family: sans-serif;
+                                                  border-radius: 0.3rem;
+                                                  cursor: pointer;
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+
+                        <span id="file-chosen-summary" style="margin-left: 0.3rem;
+                                                      font-family: sans-serif;">No file chosen</span>
+
+                    </div>
+
+                    <div class="drop_box">
+                        <header>
+                            <h4>Upload Scheduled Summary file:</h4>
+                        </header>
+
+                        <input type="file" id="upload-sched-summary" name="upload-sched-summary" hidden/>
+                        <label for="upload-sched-summary" style="display: inline-block;
+                                                  background-color: rgb(251 146 60);
+                                                  color: white;
+                                                  padding: 0.5rem;
+                                                  font-family: sans-serif;
+                                                  border-radius: 0.3rem;
+                                                  cursor: pointer;
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+
+                        <span id="file-chosen-sched-summary" style="margin-left: 0.3rem;
+                                                      font-family: sans-serif;">No file chosen</span>
+                    </div>
+
+                    <div class="drop_box">
+                        <header>
+                            <h4>Upload Scheduled Securities file:</h4>
+                        </header>
+
+                        <input type="file" id="upload-sched-sec" name="upload-sched-sec" hidden/>
+                        <label for="upload-sched-sec" style="display: inline-block;
+                                                  background-color: rgb(251 146 60);
+                                                  color: white;
+                                                  padding: 0.5rem;
+                                                  font-family: sans-serif;
+                                                  border-radius: 0.3rem;
+                                                  cursor: pointer;
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+
+                        <span id="file-chosen-sched-sec" style="margin-left: 0.3rem;
+                                                      font-family: sans-serif;">No file chosen</span>
+
+                    </div>
+
+                    <div class="drop_box">
+                        <header>
+                            <h4>Upload Usage Detail file:</h4>
+                        </header>
+
+                        <input type="file" id="upload-usage-detail" name="upload-usage-detail" hidden/>
+                        <label for="upload-usage-detail" style="display: inline-block;
+                                                  background-color: rgb(251 146 60);
+                                                  color: white;
+                                                  padding: 0.5rem;
+                                                  font-family: sans-serif;
+                                                  border-radius: 0.3rem;
+                                                  cursor: pointer;
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+
+                        <span id="file-chosen-usage-detail" style="margin-left: 0.3rem;
+                                                      font-family: sans-serif;">No file chosen</span>
+
+                    </div>
+            </form>
+
+        <!-- Spinner HTML -->
+        <div id="spinner">
+            <img src="{% static 'loading.gif' %}" alt="Loading..." />
+        </div>
+    <div id="alert-box"></div>
+
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    const actualBtnInvoices = document.getElementById('upload-invoices');
+    const fileChosenInvoices = document.getElementById('file-chosen-invoices');
+
+    const actualBtnSummary = document.getElementById('upload-summary');
+    const fileChosenSummary = document.getElementById('file-chosen-summary');
+
+    const actualBtnSchedSummary = document.getElementById('upload-sched-summary');
+    const fileChosenSchedSummary = document.getElementById('file-chosen-sched-summary');
+
+    const actualBtnSchedSec = document.getElementById('upload-sched-sec');
+    const fileChosenSchedSec = document.getElementById('file-chosen-sched-sec');
+
+    const actualBtnUsageDetail = document.getElementById('upload-usage-detail');
+    const fileChosenUsageDetail = document.getElementById('file-chosen-usage-detail');
+
+    actualBtnInvoices.addEventListener('change', function(){
+      fileChosenInvoices.textContent = this.files[0].name
+    })
+
+    actualBtnSummary.addEventListener('change', function(){
+      fileChosenSummary.textContent = this.files[0].name
+    })
+
+    actualBtnSchedSummary.addEventListener('change', function(){
+      fileChosenSchedSummary.textContent = this.files[0].name
+    })
+
+    actualBtnSchedSec.addEventListener('change', function(){
+      fileChosenSchedSec.textContent = this.files[0].name
+    })
+
+    actualBtnUsageDetail.addEventListener('change', function(){
+      if (this.files[0]== undefined) {
+        fileChosenUsageDetail.textContent = 'No file chosen'
+      } else {
+        fileChosenUsageDetail.textContent = this.files[0].name
+      }
+    })
+
+   function showSpinner(event) {
+        document.getElementById('overlay').style.display = 'block'; // Show the overlay
+        document.getElementById('spinner').style.display = 'block'; // Show the spinner
+    }
+
+</script>
+
+</body>
+</html>

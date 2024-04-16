@@ -1,5 +1,5 @@
 # Byte-compile / optimization / DLL files
-testApp/__pycache__/
+Boomee_comet/testApp/__pycache__/
 *.py[cod]
 *$py.class
  
@@ -45,7 +45,7 @@ coverage.xml
 
  
 # Environment variables
-Boomee/Boomie-env/
+Boomee_comet/Boomie-env/
 .secret
  
 # Visual Studio Code

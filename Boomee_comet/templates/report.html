@@ -1,0 +1,249 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <style>
+@import url("https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic");
+
+body {
+  font-size: 14px;
+  font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #666;
+  background: #f2f2f2;
+  /*-webkit-text-size-adjust: 100%;*/
+  -moz-osx-font-smoothing: grayscale;
+  /*-webkit-font-smoothing: antialiased;*/ }
+
+a {
+  text-decoration: none; }
+  a:hover {
+    text-decoration: none; }
+
+/* ------------ Sidenav CSS ------------- */
+#sidenav {
+  position: fixed;
+  width: 300px;
+  height: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99999;
+  background: #ffffff;
+  }
+
+  #sidenav.open {
+    left: -300px;
+  }
+  #sidenav .logo {
+      width: 100%;
+      padding: 2px 30px;
+      background: #ffffff;
+      display: block; }
+
+    #sidenav .logo a {
+      color: #dadada;
+      font-size: 30px; }
+
+ #sidenav .logo a.nav-icon {
+      margin-left: 200px;
+      color: red; }
+#sidenav .menu {
+      position: static;
+      }
+
+    #sidenav .menu ul {
+      list-style: none;
+      background: #ffffff;
+      padding: 10% 0;
+      margin: 0;
+      }
+
+    #sidenav .menu ul li {
+        padding: 6px 14%;
+        }
+    #sidenav .menu ul li.active {
+        background: #edebeb;
+        border-left: solid 5px red;
+        }
+    #sidenav .menu ul li a {
+        font-size: 22px;
+        color: #FE5837;
+        font-weight: 500;
+        display: block;
+        }
+    #sidenav .menu ul li a:hover {
+        font-weight: 550;
+        color: red;
+        }
+    #sidenav .menu ul li a.logout:hover {
+        color: red;
+        }
+
+    .iframe-container {
+           position: relative;
+            width: 90%;
+            padding-bottom: 65%; /* 16:9 aspect ratio (9 / 16 = 0.5625) */
+            margin: 20px auto; /* Adjust margin as needed */
+            overflow: hidden;
+      }
+
+      .iframe-container iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+
+        .btn-outline-primary {
+            color: #FE5837; /* Couleur ajustée pour le lien */
+            border-color: #FE5837; /* Couleur ajustée pour le lien */
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff; /* Couleur ajustée pour le lien au survol */
+            border-color: #FE5837; /* Couleur ajustée pour le lien au survol */
+            background-color: #FE5837;
+        }
+
+        .btn-primary.disabled,
+        .btn-primary:disabled {
+            color: #fff;
+            background-color: #FE5837;
+            border-color: #FE5837;
+        }
+
+        .btn-primary:not(:disabled):not(.disabled):active,
+        .btn-primary:not(:disabled):not(.disabled).active,
+        .show > .btn-primary.dropdown-toggle {
+            color: #fff;
+            background-color: #5a23c8;
+            border-color: #5a23c8;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #FE5837;
+            border-color: #FE5837;
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #464743;
+            border-color: #464743;
+        }
+
+        .btn-primary:focus,
+        .btn-primary.focus {
+            box-shadow: 0 0 0 0.25rem rgba(254, 88, 55, 0.5);
+        }
+
+
+
+        @media (max-width: 768px) {
+            #sidenav {
+                width: 100%;
+                height: auto;
+                top: 0;
+                bottom: 0;
+                left: -100%;
+            }
+
+            #sidenav .logo {
+                padding: 10px 20px;
+            }
+
+            #sidenav .menu {
+                display: none;
+            }
+
+            #sidenav .menu.open {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                z-index: -1;
+                display: block !important;
+            }
+
+            #sidenav .menu ul {
+                border-top: solid 1px #333;
+            }
+
+            #sidenav .menu ul li {
+                padding: 6px 5%;
+            }
+        }
+
+
+                #spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Higher z-index */
+        }
+
+		 #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            z-index: 9999; /* Ensure it's above other elements except spinner */
+        }
+    </style>
+</head>
+<body>
+  <div class="app">
+    <div id="sidenav">
+      <div class="wrapper">
+        <div class="logo">
+			<img src="../static/comet_logo_min.png" alt="Comet Logo" class="logo" role="img" aria-label="Comet">
+        </div>
+          <hr>
+        <div class="menu">
+          <ul>
+            <li class="active"><a href="/report">Dashboard</a></li>
+            <li></li>
+            {% if user.is_superuser %}
+            <li ><a href="/home">Upload Files</a></li>
+            {% endif %}
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <div class="col-md-3 mb-2 mb-md-0">
+        </div>
+
+
+      <div class="col-md-3 text-end">
+        <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
+      </div>
+    </header>
+
+      <div class="row" style="margin-left: 400px;">
+          <div class="col-md-12">
+              <div class="iframe-container">
+                <iframe title="COMET" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiYzBiMGQ2ZDYtNjQ2NC00ZWJhLTk1OWMtZTUyYTAxMTA2NmQ2IiwidCI6IjFmNDMwZTlmLTQzMjktNGE1NS1iMDZmLTc1N2IxNTYxOGFiOSJ9" frameborder="0" allowFullScreen="true"></iframe>          </div>
+      </div>
+
+  </div>
+</body>
+</html>
