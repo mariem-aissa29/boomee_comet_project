@@ -312,9 +312,9 @@ a {
          <hr>
         <div class="menu">
           <ul>
-            <li ><a href="/report">Dashboard</a></li>
+            <li ><a href="/report">Rapport</a></li>
             <li></li>
-            <li class="active"><a href="/home">Upload Files</a></li>
+            <li class="active"><a href="/home">Charger des fichiers</a></li>
 
           </ul>
         </div>
@@ -329,7 +329,7 @@ a {
 
 
       <div class="col-md-3 text-end">
-        <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
+        <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Se déconnecter</a>
       </div>
     </header>
         <div class="content" style="margin-left: 330px;">
@@ -357,12 +357,12 @@ a {
             {% endif %}
 
             <form id="uploadForm" action="{% url 'home' %}" method="POST" enctype="multipart/form-data" onsubmit="showSpinner(event)">
-                <button type="submit" class="btn btn-primary"> Upload Files</button>
+                <button type="submit" class="btn btn-primary"> Charger des fichiers</button>
                     {% csrf_token %}
 
                     <div class="drop_box">
                         <header>
-                            <h4>Upload invoices file:</h4>
+                            <h4>Charger le fichier de facture:</h4>
                         </header>
 
                         <input type="file" id="upload-invoices"  name="upload-invoices" accept=".csv" hidden/>
@@ -373,16 +373,16 @@ a {
                                                   font-family: sans-serif;
                                                   border-radius: 0.3rem;
                                                   cursor: pointer;
-                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choisissez un fichier</label>
 
                         <span id="file-chosen-invoices" style="margin-left: 0.3rem;
-                                                      font-family: sans-serif;">No file chosen</span>
+                                                      font-family: sans-serif;">Pas de fichier sélectionné</span>
 
                     </div>
 
                     <div class="drop_box">
                             <header>
-                            <h4>Upload Summary File:</h4>
+                            <h4>Charger le fichier résumé:</h4>
                         </header>
 
                         <input type="file" id="upload-summary" name="upload-summary" hidden/>
@@ -393,16 +393,16 @@ a {
                                                   font-family: sans-serif;
                                                   border-radius: 0.3rem;
                                                   cursor: pointer;
-                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choisissez un fichier</label>
 
                         <span id="file-chosen-summary" style="margin-left: 0.3rem;
-                                                      font-family: sans-serif;">No file chosen</span>
+                                                      font-family: sans-serif;">Pas de fichier sélectionné</span>
 
                     </div>
 
                     <div class="drop_box">
                         <header>
-                            <h4>Upload Scheduled Summary file:</h4>
+                            <h4>Charger le fichier de résumé planifié:</h4>
                         </header>
 
                         <input type="file" id="upload-sched-summary" name="upload-sched-summary" hidden/>
@@ -413,15 +413,15 @@ a {
                                                   font-family: sans-serif;
                                                   border-radius: 0.3rem;
                                                   cursor: pointer;
-                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choisissez un fichier</label>
 
                         <span id="file-chosen-sched-summary" style="margin-left: 0.3rem;
-                                                      font-family: sans-serif;">No file chosen</span>
+                                                      font-family: sans-serif;">Pas de fichier sélectionné</span>
                     </div>
 
                     <div class="drop_box">
                         <header>
-                            <h4>Upload Scheduled Securities file:</h4>
+                            <h4>Charger le fichier de titre planifié:</h4>
                         </header>
 
                         <input type="file" id="upload-sched-sec" name="upload-sched-sec" hidden/>
@@ -432,16 +432,16 @@ a {
                                                   font-family: sans-serif;
                                                   border-radius: 0.3rem;
                                                   cursor: pointer;
-                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choisissez un fichier</label>
 
                         <span id="file-chosen-sched-sec" style="margin-left: 0.3rem;
-                                                      font-family: sans-serif;">No file chosen</span>
+                                                      font-family: sans-serif;">Pas de fichier sélectionné</span>
 
                     </div>
 
                     <div class="drop_box">
                         <header>
-                            <h4>Upload Usage Detail file:</h4>
+                            <h4>Charger Fichier de détails d'utilisation:</h4>
                         </header>
 
                         <input type="file" id="upload-usage-detail" name="upload-usage-detail" hidden/>
@@ -452,10 +452,10 @@ a {
                                                   font-family: sans-serif;
                                                   border-radius: 0.3rem;
                                                   cursor: pointer;
-                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choose file</label>
+                                                  margin-top: 1rem;"><i class="fas fa-cloud-upload-alt mr-2"></i> Choisissez un fichier</label>
 
                         <span id="file-chosen-usage-detail" style="margin-left: 0.3rem;
-                                                      font-family: sans-serif;">No file chosen</span>
+                                                      font-family: sans-serif;">Pas de fichier sélectionné</span>
 
                     </div>
             </form>
@@ -486,24 +486,40 @@ a {
     const fileChosenUsageDetail = document.getElementById('file-chosen-usage-detail');
 
     actualBtnInvoices.addEventListener('change', function(){
-      fileChosenInvoices.textContent = this.files[0].name
+      if (this.files[0]== undefined) {
+        fileChosenInvoices.textContent = 'Pas de fichier sélectionné'
+      } else {
+        fileChosenInvoices.textContent = this.files[0].name
+      }
     })
 
     actualBtnSummary.addEventListener('change', function(){
-      fileChosenSummary.textContent = this.files[0].name
+      if (this.files[0]== undefined) {
+        fileChosenSummary.textContent = 'Pas de fichier sélectionné'
+      } else {
+        fileChosenSummary.textContent = this.files[0].name
+      }
     })
 
     actualBtnSchedSummary.addEventListener('change', function(){
-      fileChosenSchedSummary.textContent = this.files[0].name
+      if (this.files[0]== undefined) {
+        fileChosenSchedSummary.textContent = 'Pas de fichier sélectionné'
+      } else {
+        fileChosenSchedSummary.textContent = this.files[0].name
+      }
     })
 
     actualBtnSchedSec.addEventListener('change', function(){
-      fileChosenSchedSec.textContent = this.files[0].name
+      if (this.files[0]== undefined) {
+        fileChosenSchedSec.textContent = 'Pas de fichier sélectionné'
+      } else {
+        fileChosenSchedSec.textContent = this.files[0].name
+      }
     })
 
     actualBtnUsageDetail.addEventListener('change', function(){
       if (this.files[0]== undefined) {
-        fileChosenUsageDetail.textContent = 'No file chosen'
+        fileChosenUsageDetail.textContent = 'Pas de fichier sélectionné'
       } else {
         fileChosenUsageDetail.textContent = this.files[0].name
       }

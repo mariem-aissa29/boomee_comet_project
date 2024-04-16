@@ -57,35 +57,35 @@ def homePage(request):
                 if error_message_invoices is not None and 'invoices error' in error_message_invoices:
                     error_messages['error_message_invoices'] = error_message_invoices['invoices error']
                 else:
-                    success_messages.append("Upload invoices file successfully")
+                    success_messages.append("Le fichier des factures a été chargé avec succès.")
 
             if summary_file:
                 error_message_sum = handle_summary_file(summary_file)
                 if error_message_sum is not None and 'sum error' in error_message_sum:
                     error_messages['error_message_sum'] = error_message_sum['sum error']
                 else:
-                    success_messages.append("Upload Summary file successfully")
+                    success_messages.append("Le fichier de résumé a été chargé avec succès.")
 
             if sched_sum_file:
                 error_message_sched_sum = handle_sched_sum_file(sched_sum_file)
                 if error_message_sched_sum is not None and 'sched sum error' in error_message_sched_sum:
                     error_messages['error_message_sched_sum'] = error_message_sched_sum['sched sum error']
                 else:
-                    success_messages.append("Upload Scheduled Summary file successfully")
+                    success_messages.append("Le fichier de résumé planifié a été chargé avec succès.")
 
             if sched_sec_file:
                 error_message_sched_sec = handle_sched_sec_file(sched_sec_file)
                 if error_message_sched_sec is not None and 'sched sec error' in error_message_sched_sec:
                     error_messages['error_message_sched_sec'] = error_message_sched_sec['sched sec error']
                 else:
-                    success_messages.append("Upload Scheduled Securities file successfully")
+                    success_messages.append("Le fichier de titres planifiés a été chargé avec succès.")
 
             if usage_detail_file:
                 error_message_usage_detail = handle_usage_detail_file(usage_detail_file)
                 if error_message_usage_detail is not None and 'usage detail error' in error_message_usage_detail:
                     error_messages['error_message_usage_detail'] = error_message_usage_detail['usage detail error']
                 else:
-                    success_messages.append("Upload Usage Detail file successfully")
+                    success_messages.append("Le fichier de détail d'utilisation a été chargé avec succès.")
 
 
     return render(request, 'home.html',
@@ -100,7 +100,7 @@ def loginPage(request):
             login(request,user)
             return redirect('report')
         else:
-            error_message = 'Username and password are incorrect'
+            error_message = 'Email ou mot de passe incorrect'
             return render(request, 'login.html', {'error_message': error_message})
 
     return render (request, 'login.html')
@@ -232,6 +232,7 @@ def handle_summary_file(file):
     if result_migrate is not None and 'sum error' in result_migrate:
         delete_all_insert_sum()
         return result_migrate
+
 def insert_summary_file(row):
     data = insert_record_into_summary_alim(row)
     return data
