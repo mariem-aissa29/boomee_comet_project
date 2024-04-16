@@ -114,7 +114,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-#True à voir avec nizar
+#True
 USE_TZ = False
 
 
@@ -131,4 +131,4 @@ STATICFILES_DIRS = [
 ]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ['https://comet.unite-consulting.fr/']
+CSRF_TRUSTED_ORIGINS = ['https://comet.unite-consulting.fr']

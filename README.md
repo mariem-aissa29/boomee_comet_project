@@ -8,8 +8,6 @@ Once you have all the needed requirements installed, clone the project:
 https://github.com/Unite-Consulting/Comet.git
 ```
 
-
-
 ### Installation
 create an virtual environment
 ```sh
@@ -71,4 +69,3 @@ or
 pip3 install psycopg2
 ```
 
-thas all look into authentication folder and template forlder for how things work especially views.py and urls.py file.
