@@ -57,7 +57,7 @@ def insert_record_into_invoices_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"invoices error": str(e) + ' for invoices'}
+        error = {"invoices error": 'erreur d\'insertion de factures dans la table alim'}
         return error
     finally:
         # Release the database connection
@@ -69,6 +69,8 @@ def migrate_from_invoices_alim_to_invoices():
     conn = get_connection()
     # Create a cursor
     cur = conn.cursor()
+    rowcount = {}
+    count = 0
     sql_queries = [
         #"DELETE FROM invoices_alim_test WHERE line='Line#';",
         "DELETE FROM invoices_alim WHERE QUANTITY='' and datacategory='' and assettype='' and feetype='' and requesttype='';",
@@ -114,9 +116,13 @@ def migrate_from_invoices_alim_to_invoices():
         try:
             cur.execute(query)
             conn.commit()
+            print('rowcount', cur.rowcount)
+            count = cur.rowcount
         except Exception as e:
             # Collect queries that caused exceptions
             exception_queries.append(query)
+            error = {"invoices error": 'erreur de migration de fichier de factures'}
+            return error
     cur.close()
     conn.close()
     # Retry executing exception queries
@@ -129,6 +135,9 @@ def migrate_from_invoices_alim_to_invoices():
 
     cur.close()
     conn.close()
+
+    rowcount = {'row': count}
+    return rowcount
 
 # Function to delete 'invoices_alim' table and recreate it
 def delete_all_insert_invoices():
@@ -188,7 +197,7 @@ def insert_record_into_summary_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"summary error": str(e) + ' for summary'}
+        error = {"summary error": 'erreur d\'insertion de résumé dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -217,6 +226,8 @@ def migrate_from_summary_alim_to_summary(date_of_file):
 
         except Exception as e:
             print("###################Exception" , e)
+            error = {"summary error": 'erreur de migration de fichier de résumé'}
+
 
     print("********************* Migration vers SUMMARY TEST Done ******************")
 
@@ -278,7 +289,7 @@ def insert_record_into_sched_sum_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"sched sum error": str(e) + ' for sched sum'}
+        error = {"sched sum error": 'erreur d\'insertion de résumé planifié dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -330,6 +341,8 @@ def migrate_from_sched_sum_alim_to_sched_sum(date_of_file):
 
         except Exception as e:
             print("###################Exception" , e)
+            error = {"sched sum error": 'erreur de migration de fichier de résumé planifié'}
+            return error
     print("********************* Migration vers sched sum test Done ******************")
     # Commit and close connections
     conn.commit()
@@ -391,7 +404,7 @@ def insert_record_into_sched_sec_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred: {e}")
-        error = {"sched sec error": str(e) + ' for sched sec'}
+        error = {"sched sec error": 'erreur d\'insertion de titres planifiés dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -425,6 +438,8 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             print("###################Exception", e)
+            error = {"sched sec error": 'erreur de migration de titres planifiés'}
+            return error
 
     # Commit and close connections
     conn.commit()
@@ -487,12 +502,11 @@ def insert_record_into_usage_detail_alim(chunk):
         print("Inserted", len(chunk), "records")
     except Exception as e:
         # Handle exceptions during insertion
-        error = {"usage detail error": str(e) +' for usage detail'}
+        error = {"usage detail error": 'erreur d\'insertion de détail d\'utilisation dans la table alim '}
         return error
     finally:
         # Release the database connection
         release_connection(conn)
-
 
 # Function to migrate data from 'usage_detail_alim' to 'usage_detail' table
 def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
@@ -500,6 +514,8 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
     conn = get_connection()
     # Create a cursor
     cur = conn.cursor()
+    rowcount = {}
+    count = 0
 
     # Add a new column 'date_of_file' to the 'usage_detail_alim' table
     cur.execute("ALTER TABLE usage_detail_alim ADD COLUMN date_of_file VARCHAR(30);")
@@ -520,15 +536,19 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
     for query in sql_queries:
         try:
             cur.execute(query)
+            rowcount = cur.rowcount
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             # Handle exceptions during SQL execution and return error message
-            error = {"usage detail error": str(e) + ' for usage detail'}
+            error = {"usage detail error": 'erreur de migration de détail d\'utilisation'}
             return error
     # Commit and close connections
     conn.commit()
     cur.close()
     conn.close()
+
+    rowcount = {'row': count}
+    return rowcount
 
 # Function to delete 'usage_detail_alim' table and recreate it
 def delete_all_insert_usage_detail():
@@ -549,6 +569,7 @@ def delete_all_insert_usage_detail():
             print("DROP & CREATE USAGE DETAIL", cur.rowcount)
         except Exception as e:
             print("exception delete and create table usage detail", e)
+            
     # Commit and close connections
     conn.commit()
     cur.close()
