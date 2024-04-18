@@ -64,7 +64,7 @@ def insert_record_into_invoices_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'invoices_alim' to 'invoices' table
-def migrate_from_invoices_alim_to_invoices():
+def migrate_from_invoices_alim_to_invoices(end_date):
     # Establish a database connection
     conn = get_connection()
     # Create a cursor
@@ -133,11 +133,13 @@ def migrate_from_invoices_alim_to_invoices():
         conn.commit()
     print("********************* Migration vers INVOIVES DONE  Done ******************")
 
+    res = cur.execute(f"select count(*) FROM invoices WHERE end_date = %s", [end_date])
+    result = cur.fetchone()
+    conn.commit()
     cur.close()
     conn.close()
 
-    rowcount = {'row': count}
-    return rowcount
+    return {'rowcounts': result[0]}
 
 # Function to delete 'invoices_alim' table and recreate it
 def delete_all_insert_invoices():
@@ -230,10 +232,13 @@ def migrate_from_summary_alim_to_summary(date_of_file):
 
 
     print("********************* Migration vers SUMMARY TEST Done ******************")
-
+    res = cur.execute(f"select count(*) FROM summary WHERE date_of_file = %s", [date_of_file])
+    result = cur.fetchone()
     conn.commit()
     cur.close()
     conn.close()
+
+    return {'rowcounts': result[0]}
 
 # Function to delete 'summary_alim_test' table and recreate it
 def delete_all_insert_sum():
@@ -345,9 +350,14 @@ def migrate_from_sched_sum_alim_to_sched_sum(date_of_file):
             return error
     print("********************* Migration vers sched sum test Done ******************")
     # Commit and close connections
+    res = cur.execute(f"select count(*) FROM sched_sum WHERE date_of_file = %s", [date_of_file])
+    result = cur.fetchone()
     conn.commit()
     cur.close()
     conn.close()
+
+    return {'rowcounts': result[0]}
+
 
 # Function to delete 'sched_sum_alim_test' table and recreate it
 def delete_all_insert_sched_sum():
@@ -416,7 +426,8 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
     conn = get_connection()
     # Create a cursor
     cur = conn.cursor()
-
+    rowcount = {}
+    count = 0
     # Add a new column 'date_of_file' to the 'sched_sec_alim' table
     cur.execute("ALTER TABLE sched_sec_alim ADD COLUMN date_of_file VARCHAR(30);")
 
@@ -435,6 +446,7 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
     for query in sql_queries:
         try:
             cur.execute(query)
+            rowcount = cur.rowcount
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             print("###################Exception", e)
@@ -442,9 +454,13 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
             return error
 
     # Commit and close connections
+    res = cur.execute(f"select count(*) FROM sched_sec WHERE date_of_file = %s", [date_of_file])
+    result = cur.fetchone()
     conn.commit()
     cur.close()
     conn.close()
+
+    return {'rowcounts': result[0]}
 
 # Function to delete 'sched_sec_alim' table and recreate it
 def delete_all_insert_sched_sec():
@@ -536,19 +552,23 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
     for query in sql_queries:
         try:
             cur.execute(query)
-            rowcount = cur.rowcount
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             # Handle exceptions during SQL execution and return error message
             error = {"usage detail error": 'erreur de migration de détail d\'utilisation'}
             return error
     # Commit and close connections
+
+    res = cur.execute(f"select count(*) FROM usage_detail WHERE date_of_file = %s", [date_of_file])
+    result = cur.fetchone()
+
     conn.commit()
     cur.close()
     conn.close()
+ 
 
-    rowcount = {'row': count}
-    return rowcount
+    return {'rowcounts': result[0]}
+
 
 # Function to delete 'usage_detail_alim' table and recreate it
 def delete_all_insert_usage_detail():
