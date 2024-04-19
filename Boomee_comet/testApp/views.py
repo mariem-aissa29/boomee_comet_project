@@ -79,13 +79,20 @@ def homePage(request):
             if summary_file:
                 # Get the file extension
                 file_extension = summary_file.name
+                exist_message_summary=""
                 if '.' not in file_extension:
                     print('The uploaded file does not have an extension')
                     message_sum = handle_summary_file(summary_file)
                     if message_sum is not None and 'sum error' in message_sum:
                         error_messages['error_message_sum'] = message_sum['sum error']
                     else:
-                        success_messages.append("Le fichier summary a été chargé avec succès de "+ str(message_sum['rowcounts']) +" lignes")
+                        if message_sum['exist']:
+                            exist_message_summary = "Fichier summary déjà existe et remplacé avec succées;;   "
+                        if message_sum['file_data_lines'] == message_sum['rowcounts']:
+                            success_messages.append(exist_message_summary+"Nombre de lignes dans le fichier summary: "+ str(message_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sum['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier summary déjà existe ;; Nombre de lignes dans le fichier summary: "+ str(message_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sum['rowcounts']) +" lignes"
+
                 else:
                     error_messages['error_message_extension_summary'] = "Vérifier l'extension du fichier de résumé"
 
@@ -99,7 +106,12 @@ def homePage(request):
                     if message_sched_sum is not None and 'sched sum error' in message_sched_sum:
                         error_messages['error_message_sched_sum'] = message_sched_sum['sched sum error']
                     else:
-                        success_messages.append("Le fichier scheduled summary a été chargé avec succès de "+ str(message_sched_sum['rowcounts']) +" lignes")
+                        if message_sched_sum['exist']:
+                            exist_message_summary = "Fichier scheduled summary déjà existe et remplacé avec succées;;   "
+                        if message_sched_sum['file_data_lines'] == message_sched_sum['rowcounts']:
+                            success_messages.append(exist_message_summary+"Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier scheduled summary déjà existe ;; Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes"
                 else:
                     error_messages['error_message_extension_sched_sum'] = "Vérifier l'extension du fichier de résumé planifié"
 
@@ -107,14 +119,20 @@ def homePage(request):
             if sched_sec_file:
                 # Get the file extension
                 file_extension = sched_sec_file.name
+                exist_message_sched_sec=""
                 if '.' not in file_extension:
                     print('The uploaded file does not have an extension')
                     message_sched_sec = handle_sched_sec_file(sched_sec_file)
                     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
                         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
                     else:
-                        success_messages.append("Le fichier scheduled securities a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
-
+                        if message_usage_detail['exist']:
+                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
+                            
+                        if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
+                            success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier scheduled securities déjà existe ;; Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes"
                 else:
                     error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
 
@@ -122,16 +140,24 @@ def homePage(request):
             if usage_detail_file:
                 # Get the file extension
                 file_extension = usage_detail_file.name
+                exist_message_usage_detail=""
                 if '.' not in file_extension:
                     print('The uploaded file does not have an extension')
                     message_usage_detail = handle_usage_detail_file(usage_detail_file)
-                    print('')
+                    print('message_usage_detail', message_usage_detail)
                     if message_usage_detail is not None and 'usage detail error' in message_usage_detail:
                         error_messages['error_message_usage_detail'] = message_usage_detail['usage detail error']
                     else:
-                        success_messages.append("Le fichier usage detail a été chargé avec succès de "+ str(message_usage_detail['rowcounts']) +" lignes")
+                        if message_usage_detail['exist']:
+                            exist_message_usage_detail = "Fichier usage détail déjà existe et remplacé avec succées;;   "
+                            
+                        if message_usage_detail['file_data_lines'] == message_usage_detail['rowcounts']:
+                            success_messages.append(exist_message_usage_detail+"Nombre de lignes dans le fichier usage detail: "+ str(message_usage_detail['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_usage_detail['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier usage détail déjà existe ;; Nombre de lignes dans le fichier usage detail: "+ str(message_usage_detail['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_usage_detail['rowcounts']) +" lignes"
+
                 else:
-                    error_messages['error_message_extension_usage_detail'] = "Vérifier l'extension du fichier de détail d'utilisation"
+                    error_messages['error_message_extension_usage_detail'] = "Vérifier l'extension du fichier de usage détail"
 
 
     return render(request, 'home.html',
@@ -173,8 +199,8 @@ def reportPage(request):
 
 
 def handle_csv_file(csv_file):
-    
     start_time = time.perf_counter()
+    exist=False
     chunk_size = 5000
     max_workers = 10
     
@@ -191,12 +217,14 @@ def handle_csv_file(csv_file):
 
     lines = [line.split(';') for line in lines if line.strip()]  # Split each line by ';'
     print('lines', lines)
+    length_lines = len(lines)
     end_dates = [line[9] for line in lines]
     exist_date_of_file = check_end_date_in_database("invoices", end_dates[0])
     print('***exist_date_of_file***', exist_date_of_file)
 
     if exist_date_of_file:
         print('exist file csv')
+        exist=True
         delete_exist_data_invoices("invoices", end_dates[0])
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
@@ -234,6 +262,7 @@ def handle_csv_file(csv_file):
             delete_all_insert_invoices()
             return result_migrate
     if result_migrate is not None and 'rowcounts' in result_migrate:
+        result_migrate['exist']=exist
         return result_migrate
 
 def insert_invoices_file(row):
@@ -243,6 +272,7 @@ def insert_invoices_file(row):
 
 def handle_summary_file(file):
     start_time = time.perf_counter()
+    exist=False
     chunk_size = 5000
     max_workers = 10
     # Handle summary file processing
@@ -261,6 +291,7 @@ def handle_summary_file(file):
     exist_date_of_file = check_date_of_file_in_database("summary", date_of_file)
 
     if exist_date_of_file:
+        exist=True
         delete_exist_data("summary", date_of_file)
         
     file_data = file.read().decode('utf-8')
@@ -269,7 +300,7 @@ def handle_summary_file(file):
     # Split each line and remove header
     lines = [line.split('|') for line in lines[1:] if line.strip()]
     print('Total lines:', len(lines))
-
+    length_lines = len(lines)
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
 
@@ -298,11 +329,12 @@ def handle_summary_file(file):
             delete_all_insert_sum()
             return future.result()
 
-    result_migrate = migrate_from_summary_alim_to_summary(date_of_file)
+    result_migrate = migrate_from_summary_alim_to_summary(date_of_file, length_lines)
     if result_migrate is not None and 'sum error' in result_migrate:
         delete_all_insert_sum()
         return result_migrate
     if result_migrate is not None and 'rowcounts' in result_migrate:
+        result_migrate['exist']=exist
         return result_migrate
 
 def insert_summary_file(row):
@@ -312,6 +344,7 @@ def insert_summary_file(row):
 
 def handle_sched_sum_file(file):
     start_time = time.perf_counter()
+    exist=False
     chunk_size = 5000
     max_workers = 10
     # Handle text file processing
@@ -320,9 +353,11 @@ def handle_sched_sum_file(file):
     year = date_str[:4]
     month = date_str[4:]
     date_of_file = month + "/01/" + year
+    print('date_of_file', date_of_file)
 
     exist_date_of_file = check_date_of_file_in_database("sched_sum", date_of_file)
     if exist_date_of_file:
+        exist=True
         delete_exist_data("sched_sum", date_of_file)
     
     file_data = file.read().decode('utf-8')
@@ -330,7 +365,7 @@ def handle_sched_sum_file(file):
     
     # Split each line and remove header
     lines = [line.split('|') for line in lines[1:] if line.strip()]
-    
+    length_lines = len(lines)
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
 
@@ -360,11 +395,12 @@ def handle_sched_sum_file(file):
             delete_all_insert_sched_sum()
             return future.result()
 
-    result_migrate = migrate_from_sched_sum_alim_to_sched_sum(date_of_file)
+    result_migrate = migrate_from_sched_sum_alim_to_sched_sum(date_of_file, length_lines)
     if result_migrate is not None and 'sched sum error' in result_migrate:
         delete_all_insert_sched_sum()
         return result_migrate
     if result_migrate is not None and 'rowcounts' in result_migrate:
+        result_migrate['exist']=exist
         return result_migrate
 
 def insert_sched_sum_file(row):
@@ -374,6 +410,7 @@ def insert_sched_sum_file(row):
 
 def handle_sched_sec_file(file):
     start_time = time.perf_counter()
+    exist=False
     # Define chunk size and max workers
     chunk_size = 5000
     max_workers = 10
@@ -383,15 +420,20 @@ def handle_sched_sec_file(file):
     year = date_str[:4]
     month = date_str[4:]
     date_of_file = month + "/01/" + year
+    print('date_of_file', date_of_file)
 
     exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
+    print('exist_date_of_file', exist_date_of_file)
     if exist_date_of_file:
+        print('true')
+        exist=True
         delete_exist_data("sched_sec", date_of_file)
 
     file_data = file.read().decode('utf-8')
     lines = file_data.split('\n')
     # Split each line and remove header
     lines = [line.split('|') for line in lines[1:] if line.strip()]
+    length_lines = len(lines)
 
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
@@ -422,11 +464,12 @@ def handle_sched_sec_file(file):
             delete_all_insert_sched_sec()
             return future.result()
 
-    result_migrate = migrate_from_sched_sec_alim_to_sched_sec(date_of_file)
+    result_migrate = migrate_from_sched_sec_alim_to_sched_sec(date_of_file, length_lines)
     if result_migrate is not None and 'sched sec error' in result_migrate:
         delete_all_insert_sched_sec()
         return result_migrate
     if result_migrate is not None and 'rowcounts' in result_migrate:
+        result_migrate['exist']=exist
         return result_migrate
 
 def insert_sched_sec_file(row):
@@ -436,6 +479,7 @@ def insert_sched_sec_file(row):
 
 def handle_usage_detail_file(file):
     start_time = time.perf_counter()
+    exist=False
     # Define chunk size and max workers
     chunk_size = 3000
     max_workers = 10
@@ -444,14 +488,13 @@ def handle_usage_detail_file(file):
     date_str = name[-6:]
     year = date_str[:4]
     month = date_str[4:]
-    print('date_str', date_str)
-    print('year', year)
-    print('month', month)
  
     date_of_file = month + "/01/" + year
+    print('date_of_file', date_of_file)
     exist_date_of_file = check_date_of_file_in_database("usage_detail", date_of_file)
     if exist_date_of_file:
         print('exist date of file true')
+        exist=True
         delete_exist_data("usage_detail", date_of_file)
 
     file_data = file.read().decode('utf-8')
@@ -459,6 +502,8 @@ def handle_usage_detail_file(file):
 
     #Split each line and remove header
     lines = [line.split('|') for line in lines[1:] if line.strip()]
+    length_lines = len(lines)
+    print('****length_lines****', length_lines)
 
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
@@ -489,12 +534,13 @@ def handle_usage_detail_file(file):
             delete_all_insert_usage_detail()
             return future.result()
 
-    result_migrate = migrate_from_usage_detail_alim_to_usage_detail(date_of_file)
+    result_migrate = migrate_from_usage_detail_alim_to_usage_detail(date_of_file, length_lines)
     print('result_migrate', result_migrate)
     if result_migrate is not None and 'usage detail error' in result_migrate:
         delete_all_insert_usage_detail()
         return result_migrate
     if result_migrate is not None and 'rowcounts' in result_migrate:
+        result_migrate['exist']=exist
         return result_migrate
 
 def insert_usage_detail_file(row):
@@ -509,12 +555,13 @@ def check_date_of_file_in_database(table_name, date_of_file):
     cur = conn.cursor()
     # Parse the input date string
     parsed_date = datetime.strptime(date_of_file, '%d/%m/%Y')
+    print('parsed_date', parsed_date)
     # Format the date to the desired format
     formatted_date = parsed_date.strftime('%Y-%m-%d')
     print('formatted_date', formatted_date)
 
     # Execute a raw SQL query to check if the date exists in the database
-    cur.execute(f"SELECT COUNT(*) FROM {table_name} WHERE date_of_file = %s", [formatted_date])
+    cur.execute(f"SELECT COUNT(*) FROM {table_name} WHERE date_of_file = %s", [date_of_file])
     row = cur.fetchone()
     count = row[0]
     print('count', count)

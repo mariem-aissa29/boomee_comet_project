@@ -208,7 +208,7 @@ def insert_record_into_summary_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'Summary_alim_test' to 'summary' table
-def migrate_from_summary_alim_to_summary(date_of_file):
+def migrate_from_summary_alim_to_summary(date_of_file, length_lines):
     conn = get_connection()
     # Create a cursor
     cur = conn.cursor()
@@ -240,7 +240,7 @@ def migrate_from_summary_alim_to_summary(date_of_file):
     cur.close()
     conn.close()
 
-    return {'rowcounts': result[0]}
+    return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 # Function to delete 'summary_alim_test' table and recreate it
 def delete_all_insert_sum():
@@ -303,7 +303,7 @@ def insert_record_into_sched_sum_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'sched_sum_alim_test' to 'sched_sum' table
-def migrate_from_sched_sum_alim_to_sched_sum(date_of_file):
+def migrate_from_sched_sum_alim_to_sched_sum(date_of_file, length_lines):
     # Establish a database connection
     conn = get_connection()
     # Create a cursor
@@ -358,7 +358,7 @@ def migrate_from_sched_sum_alim_to_sched_sum(date_of_file):
     cur.close()
     conn.close()
 
-    return {'rowcounts': result[0]}
+    return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 
 # Function to delete 'sched_sum_alim_test' table and recreate it
@@ -423,7 +423,7 @@ def insert_record_into_sched_sec_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'sched_sec_alim' to 'sched_sec' table
-def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
+def migrate_from_sched_sec_alim_to_sched_sec(date_of_file, length_lines):
     # Establish a database connection
     conn = get_connection()
     # Create a cursor
@@ -462,7 +462,7 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file):
     cur.close()
     conn.close()
 
-    return {'rowcounts': result[0]}
+    return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 # Function to delete 'sched_sec_alim' table and recreate it
 def delete_all_insert_sched_sec():
@@ -527,7 +527,7 @@ def insert_record_into_usage_detail_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'usage_detail_alim' to 'usage_detail' table
-def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
+def migrate_from_usage_detail_alim_to_usage_detail(date_of_file, length_lines):
     # Establish a database connection
     conn = get_connection()
     # Create a cursor
@@ -557,19 +557,21 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file):
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             # Handle exceptions during SQL execution and return error message
-            error = {"usage detail error": 'erreur de migration de détail d\'utilisation'}
+            print('exception', e)
+            error = {"usage detail error": 'erreur de migration usage detail'}
             return error
     # Commit and close connections
-
+    print('length_lines', length_lines)
     res = cur.execute(f"select count(*) FROM usage_detail WHERE date_of_file = %s", [date_of_file])
     result = cur.fetchone()
+    print('result[0]', result[0])
 
     conn.commit()
     cur.close()
     conn.close()
  
 
-    return {'rowcounts': result[0]}
+    return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 
 # Function to delete 'usage_detail_alim' table and recreate it
