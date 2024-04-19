@@ -75,7 +75,7 @@ a {
         border-left: solid 5px red;
         }
     #sidenav .menu ul li a {
-        font-size: 22px;
+        font-size: 20px;
         color: #FE5837;
         font-weight: 500;
         display: block;
@@ -145,43 +145,11 @@ a {
         .btn-primary.focus {
             box-shadow: 0 0 0 0.25rem rgba(254, 88, 55, 0.5);
         }
-
-
-
-        @media (max-width: 768px) {
-            #sidenav {
-                width: 100%;
-                height: auto;
-                top: 0;
-                bottom: 0;
-                left: -100%;
-            }
-
-            #sidenav .logo {
-                padding: 10px 20px;
-            }
-
-            #sidenav .menu {
-                display: none;
-            }
-
-            #sidenav .menu.open {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                right: 0;
-                left: 0;
-                z-index: -1;
-                display: block !important;
-            }
-
-            #sidenav .menu ul {
-                border-top: solid 1px #333;
-            }
-
-            #sidenav .menu ul li {
-                padding: 6px 5%;
-            }
+  * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Poppins", sans-serif;
         }
 
 
@@ -218,9 +186,7 @@ a {
           <ul>
             <li class="active"><a href="/report">Rapport</a></li>
             <li></li>
-            {% if user.is_superuser %}
             <li ><a href="/home">Charger des fichiers</a></li>
-            {% endif %}
 
           </ul>
         </div>
@@ -228,9 +194,7 @@ a {
     </div>
   </div>
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-        <div class="col-md-3 mb-2 mb-md-0">
-        </div>
-
+          <h6 style="margin-left: 320px; color: #000000;">Bonjour, {{ user_name }}</h6>
 
       <div class="col-md-3 text-end">
         <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Se déconnecter</a>

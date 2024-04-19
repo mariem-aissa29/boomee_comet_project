@@ -83,65 +83,35 @@ a {
         border-left: solid 5px red;
         }
     #sidenav .menu ul li a {
-        font-size: 22px;
+        font-size: 20px;
         color: #FE5837;
-        font-weight: 500;
+        font-weight: 400;
         display: block;
         }
     #sidenav .menu ul li a:hover {
-        font-weight: 550;
+        font-weight: 450;
         color: red;
         }
     #sidenav .menu ul li a.logout:hover {
         color: red;
         }
 
+    .btn-outline-primary {
+        color: #FE5837; /* Couleur ajustée pour le lien */
+        border-color: #FE5837; /* Couleur ajustée pour le lien */
+    }
 
-@media (max-width: 768px) {
-  #sidenav {
-    width: 100%;
-    height: 60px;
-    background: none; }
-  #sidenav .logo {
-     padding: 10px 20px;
-     }
-  #sidenav .logo a {
-      font-size: 20px;
-      }
-  #sidenav .logo a.nav-icon {
-          display: inline;
-          }
-    #sidenav .menu {
-      display: none; }
-      #sidenav .menu.open {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        z-index: -1;
-        display: block !important; }
-      #sidenav .menu ul {
-        border-top: solid 1px #333; }
-        #sidenav .menu ul li {
-          padding: 6px 5%; } }
-
-           .btn-outline-primary {
-            color: #FE5837; /* Couleur ajustée pour le lien */
-            border-color: #FE5837; /* Couleur ajustée pour le lien */
+    .btn-outline-primary:hover {
+        color: #fff; /* Couleur ajustée pour le lien au survol */
+        border-color: #FE5837; /* Couleur ajustée pour le lien au survol */
+        background-color: #FE5837;
         }
 
-        .btn-outline-primary:hover {
-            color: #fff; /* Couleur ajustée pour le lien au survol */
-            border-color: #FE5837; /* Couleur ajustée pour le lien au survol */
-            background-color: #FE5837;
-        }
-
-         .btn-primary.disabled,
-        .btn-primary:disabled {
-            color: #fff;
-            background-color: #FE5837;
-            border-color: #FE5837;
+    .btn-primary.disabled,
+     .btn-primary:disabled {
+          color: #fff;
+          background-color: #FE5837;
+          border-color: #FE5837;
         }
 
         .btn-primary:not(:disabled):not(.disabled):active,
@@ -204,8 +174,6 @@ a {
             margin-top: 5px;
         }
 
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
         * {
           margin: 0;
@@ -324,8 +292,8 @@ a {
 
   <header class="d-flex flex-wrap align-items-center justify-content-center
                     justify-content-md-between py-3 mb-4 border-bottom">
-      <div class="col-md-3 mb-2 mb-md-0">
-      </div>
+      <h6 style="margin-left: 320px; color: #000000;">Bonjour, {{ user_name }}</h6>
+
 
 
       <div class="col-md-3 text-end">
@@ -362,7 +330,7 @@ a {
 
                     <div class="drop_box">
                         <header>
-                            <h4>Charger le fichier de facture:</h4>
+                            <h4>Charger le fichier "invoices":</h4>
                         </header>
 
                         <input type="file" id="upload-invoices" name="upload-invoices" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden />
@@ -382,7 +350,7 @@ a {
 
                     <div class="drop_box">
                             <header>
-                            <h4>Charger le fichier résumé:</h4>
+                            <h4>Charger le fichier "summary":</h4>
                         </header>
 
                         <input type="file" id="upload-summary" name="upload-summary" hidden/>
@@ -402,7 +370,7 @@ a {
 
                     <div class="drop_box">
                         <header>
-                            <h4>Charger le fichier de résumé planifié:</h4>
+                            <h4>Charger le fichier "scheduled summary":</h4>
                         </header>
 
                         <input type="file" id="upload-sched-summary" name="upload-sched-summary" hidden/>
@@ -421,7 +389,7 @@ a {
 
                     <div class="drop_box">
                         <header>
-                            <h4>Charger le fichier de titre planifié:</h4>
+                            <h4>Charger le fichier "scheduled securities":</h4>
                         </header>
 
                         <input type="file" id="upload-sched-sec" name="upload-sched-sec" hidden/>
@@ -441,7 +409,7 @@ a {
 
                     <div class="drop_box">
                         <header>
-                            <h4>Charger Fichier de détails d'utilisation:</h4>
+                            <h4>Charger le fichier "usage detail":</h4>
                         </header>
 
                         <input type="file" id="upload-usage-detail" name="upload-usage-detail" hidden/>

@@ -278,22 +278,23 @@ footer a {
 		<img src="{% static 'comet_logo_min.png' %}" alt="Comet Logo" class="logo" role="img" aria-label="Comet">
 		<form action="" method="post">
 			{% csrf_token %}
-	        <h3>Signup Here</h3>
+	        <h3>S'inscrire</h3>
 
-			<input type="text" placeholder="Username" name="username" id="username">
-			<input type="email" placeholder="Email or Phone" name="email" id="email">
-			<input type="password" placeholder="Confrom Password" id="password2" name="password2">
-			<button>Sign Up</button>
+			<input type="text" placeholder="Nom" name="username" id="username">
+			<input type="email" placeholder="Email" name="email" id="email">
+            <input type="password" placeholder="Mot de passe" id="password1" name="password1">
+			<input type="password" placeholder="Confirmer mot de passe" id="password2" name="password2">
+			<button>S'inscrire</button>
 		</form>
 	</div>
 
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-right">
-				<h1>Welcome!</h1>
-				<p>i have already account</p>
+				<h1>Bienvenue !</h1>
+				<p> J'ai déjà un compte.</p>
 				<a href="/login">
-				<button class="ghost" id="signIn">Sign In</button>
+				<button class="ghost" id="signIn">Se connecter</button>
 				</a>
 			</div>
 

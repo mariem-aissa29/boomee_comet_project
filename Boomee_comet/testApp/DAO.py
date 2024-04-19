@@ -123,6 +123,9 @@ def migrate_from_invoices_alim_to_invoices(end_date):
             exception_queries.append(query)
             error = {"invoices error": 'erreur de migration de fichier de factures'}
             return error
+    
+    res = cur.execute(f"select count(*) FROM invoices WHERE end_date = %s", [end_date])
+    result = cur.fetchone()
     cur.close()
     conn.close()
     # Retry executing exception queries
@@ -133,8 +136,7 @@ def migrate_from_invoices_alim_to_invoices(end_date):
         conn.commit()
     print("********************* Migration vers INVOIVES DONE  Done ******************")
 
-    res = cur.execute(f"select count(*) FROM invoices WHERE end_date = %s", [end_date])
-    result = cur.fetchone()
+
     conn.commit()
     cur.close()
     conn.close()

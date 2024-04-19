@@ -41,11 +41,13 @@ def is_superuser(user):
 
 
 @login_required(login_url='login')
-@user_passes_test(is_superuser)
 def homePage(request):
+    print('home page')
     success_messages = []
     error_messages = {}
+    user_name = request.user.username
     if request.method == 'POST':
+        print('request method')
         form = csvImportForm(request.POST, request.FILES)
         print('post')
         if form.is_valid():
@@ -71,7 +73,7 @@ def homePage(request):
                     if message_invoices is not None and 'invoices error' in message_invoices:
                         error_messages['error_message_invoices'] = message_invoices['invoices error']
                     else:
-                        success_messages.append("Le fichier des factures a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        success_messages.append("Le fichier invoices a été chargé avec succès de "+ str(message_invoices['rowcounts']) +" lignes")
 
 
             if summary_file:
@@ -83,7 +85,7 @@ def homePage(request):
                     if message_sum is not None and 'sum error' in message_sum:
                         error_messages['error_message_sum'] = message_sum['sum error']
                     else:
-                        success_messages.append("Le fichier de résumé a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        success_messages.append("Le fichier summary a été chargé avec succès de "+ str(message_sum['rowcounts']) +" lignes")
                 else:
                     error_messages['error_message_extension_summary'] = "Vérifier l'extension du fichier de résumé"
 
@@ -97,7 +99,7 @@ def homePage(request):
                     if message_sched_sum is not None and 'sched sum error' in message_sched_sum:
                         error_messages['error_message_sched_sum'] = message_sched_sum['sched sum error']
                     else:
-                        success_messages.append("Le fichier de résumé planifié a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        success_messages.append("Le fichier scheduled summary a été chargé avec succès de "+ str(message_sched_sum['rowcounts']) +" lignes")
                 else:
                     error_messages['error_message_extension_sched_sum'] = "Vérifier l'extension du fichier de résumé planifié"
 
@@ -111,7 +113,7 @@ def homePage(request):
                     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
                         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
                     else:
-                        success_messages.append("Le fichier de titres planifiés a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        success_messages.append("Le fichier scheduled securities a été chargé avec succès de "+ str(message_sched_sec['rowcounts']) +" lignes")
 
                 else:
                     error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
@@ -127,13 +129,13 @@ def homePage(request):
                     if message_usage_detail is not None and 'usage detail error' in message_usage_detail:
                         error_messages['error_message_usage_detail'] = message_usage_detail['usage detail error']
                     else:
-                        success_messages.append("Le fichier de détail d'utilisation a été chargé avec succès de "+ str(message_usage_detail['rowcounts']) +" lignes")
+                        success_messages.append("Le fichier usage detail a été chargé avec succès de "+ str(message_usage_detail['rowcounts']) +" lignes")
                 else:
                     error_messages['error_message_extension_usage_detail'] = "Vérifier l'extension du fichier de détail d'utilisation"
 
 
     return render(request, 'home.html',
-                  {'success_messages': success_messages, 'error_messages': error_messages})
+                  {'success_messages': success_messages, 'error_messages': error_messages, 'user_name': user_name})
 
 def loginPage(request):
     if request.method == 'POST':
@@ -166,7 +168,8 @@ def logoutPage(request):
 
 @login_required(login_url='login')
 def reportPage(request):
-    return render(request, 'report.html')
+    user_name = request.user.username
+    return render(request, 'report.html', {'user_name': user_name})
 
 
 def handle_csv_file(csv_file):
@@ -193,6 +196,7 @@ def handle_csv_file(csv_file):
     print('***exist_date_of_file***', exist_date_of_file)
 
     if exist_date_of_file:
+        print('exist file csv')
         delete_exist_data_invoices("invoices", end_dates[0])
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
