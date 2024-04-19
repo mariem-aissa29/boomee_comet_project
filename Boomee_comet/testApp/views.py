@@ -62,6 +62,7 @@ def homePage(request):
                 print('hello csv file')
                 # Get the file extension
                 file_extension = csv_file.name.split('.')[-1].lower()
+                exist_message_invoices=""
 
                 # Check the file extension
                 if file_extension not in ['csv', 'xls', 'xlsx']:
@@ -73,7 +74,13 @@ def homePage(request):
                     if message_invoices is not None and 'invoices error' in message_invoices:
                         error_messages['error_message_invoices'] = message_invoices['invoices error']
                     else:
-                        success_messages.append("Le fichier invoices a été chargé avec succès de "+ str(message_invoices['rowcounts']) +" lignes")
+                        if message_invoices['exist']:
+                            exist_message_invoices = "Fichier invoices déjà existe et remplacé avec succées;;   "
+                        if message_invoices['file_data_lines'] == message_invoices['rowcounts']:
+                            success_messages.append(exist_message_invoices+"Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier invoices déjà existe ;; Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes"
+
 
 
             if summary_file:
@@ -126,7 +133,7 @@ def homePage(request):
                     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
                         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
                     else:
-                        if message_usage_detail['exist']:
+                        if message_sched_sec['exist']:
                             exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
                             
                         if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
@@ -209,23 +216,36 @@ def handle_csv_file(csv_file):
     lines = file_data.split('\n')
     lines.remove(lines[0])
     lines.remove(lines[1])
+    lines.remove(lines[2])
 
-    print('****', lines)
-    lines = [line for line in lines if
-              not (len(line.split(';')) >= 3 and "Sub-Total Current Model:" in line.split(';')[2])]
-    print('**** lines ****', lines)
+    print('****', len(lines))
+    lines.remove(lines[-1])
+    lines.remove(lines[-2])
+    lines.remove(lines[-3])
+
+
+    print('****lines', len(lines))
+
+    print('*********', lines)
 
     lines = [line.split(';') for line in lines if line.strip()]  # Split each line by ';'
-    print('lines', lines)
     length_lines = len(lines)
-    end_dates = [line[9] for line in lines]
-    exist_date_of_file = check_end_date_in_database("invoices", end_dates[0])
+    print('lines de 2', lines[2][0].split(',')[-7])
+    substring = lines[2][0].split(',')[-7]
+    print('substring', substring)
+
+    end_date = substring.replace("=", "").replace('"', '')
+    print('end_date', end_date)
+
+    
+    #end_dates = [line[9] for line in lines]
+    exist_date_of_file = check_end_date_in_database("invoices", end_date)
     print('***exist_date_of_file***', exist_date_of_file)
 
     if exist_date_of_file:
         print('exist file csv')
         exist=True
-        delete_exist_data_invoices("invoices", end_dates[0])
+        delete_exist_data_invoices("invoices", end_date)
     # Create chunks
     chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
     print('chunks', chunks)
@@ -252,10 +272,10 @@ def handle_csv_file(csv_file):
     for future in futures:
         if future.result() is not None and 'invoices error' in future.result():
             print("The key 'invoices error' exists in the dictionary.")
-            delete_all_insert_invoices()
+            #delete_all_insert_invoices()
             return future.result()
 
-    result_migrate = migrate_from_invoices_alim_to_invoices(end_dates[0])
+    result_migrate = migrate_from_invoices_alim_to_invoices(end_dates[0], length_lines)
     print('result migrate invoices', result_migrate)
     if result_migrate is not None:
         if 'invoices error' in result_migrate:
@@ -561,8 +581,9 @@ def check_date_of_file_in_database(table_name, date_of_file):
     print('formatted_date', formatted_date)
 
     # Execute a raw SQL query to check if the date exists in the database
-    cur.execute(f"SELECT COUNT(*) FROM {table_name} WHERE date_of_file = %s", [date_of_file])
+    cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
     row = cur.fetchone()
+    print('roww', row)
     count = row[0]
     print('count', count)
     return count
@@ -588,10 +609,10 @@ def delete_exist_data(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(f"delete FROM {table_name} WHERE date_of_file = %s", [date_of_file])
-    res = cur.execute(f"select count(*) FROM {table_name} WHERE date_of_file = %s", [date_of_file])
-    result = cur.fetchone()
-    count = result[0]
-    print('***count***', count)
+    # res = cur.execute(f"select count(*) FROM {table_name} WHERE date_of_file = %s", [date_of_file])
+    # result = cur.fetchone()
+    # count = result[0]
+    # print('***count***', count)
     conn.commit()
     cur.close()
     conn.close() 

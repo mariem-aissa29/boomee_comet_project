@@ -64,7 +64,7 @@ def insert_record_into_invoices_alim(chunk):
         release_connection(conn)
 
 # Function to migrate data from 'invoices_alim' to 'invoices' table
-def migrate_from_invoices_alim_to_invoices(end_date):
+def migrate_from_invoices_alim_to_invoices(end_date, length_lines):
     # Establish a database connection
     conn = get_connection()
     # Create a cursor
@@ -134,14 +134,12 @@ def migrate_from_invoices_alim_to_invoices(end_date):
         cur = conn.cursor()
         cur.execute(exception)
         conn.commit()
+        cur.close()
+        conn.close()
     print("********************* Migration vers INVOIVES DONE  Done ******************")
 
 
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return {'rowcounts': result[0]}
+    return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 # Function to delete 'invoices_alim' table and recreate it
 def delete_all_insert_invoices():
