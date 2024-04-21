@@ -28,14 +28,6 @@ from connexion_pool import get_connection
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-class csvImportForm(forms.Form):
-    csv_upload = forms.FileField(label='Upload invoices file', required=False )
-    summary_file = forms.FileField(label='Upload Summary File', required=False)
-    sched_sum_file = forms.FileField(label='Upload Scheduled Summary file', required=False)
-    sched_sec_file = forms.FileField(label='Upload Scheduled Securities file', required=False)
-    usage_detail_file = forms.FileField(label='Upload Usage Detail file', required=False)
-
-
 def is_superuser(user):
     return user.is_superuser
 
@@ -47,10 +39,6 @@ def homePage(request):
     error_messages = {}
     user_name = request.user.username
     if request.method == 'POST':
-        print('request method')
-        form = csvImportForm(request.POST, request.FILES)
-        print('post')
-        if form.is_valid():
             csv_file = request.FILES.get('upload-invoices')
             summary_file = request.FILES.get('upload-summary')
             sched_sum_file = request.FILES.get('upload-sched-summary')
@@ -69,7 +57,6 @@ def homePage(request):
                     print('The uploaded file is not a CSV or Excel file')
                     error_messages['error_message_extension_invoices'] = "Vérifier l'extension du fichier factures"
                 else:
-                    print('Excel extension')
                     message_invoices = handle_csv_file(csv_file)
                     if message_invoices is not None and 'invoices error' in message_invoices:
                         error_messages['error_message_invoices'] = message_invoices['invoices error']
@@ -80,7 +67,6 @@ def homePage(request):
                             success_messages.append(exist_message_invoices+"Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes")
                         else:
                             error_messages['error_message_data_not_uploaded'] = "Fichier invoices déjà existe ;; Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes"
-
 
 
             if summary_file:
@@ -205,6 +191,17 @@ def reportPage(request):
     return render(request, 'report.html', {'user_name': user_name})
 
 
+# Function to extract and convert date
+def extract_and_convert_dates(data_list):
+    for item in data_list:
+        if len(item) >= 10:
+            # Extract the date parts
+            date_parts = [part.replace('="', '').replace('"', '').strip() for part in item[8:10]]
+            item[8:10] = date_parts
+    
+    return data_list
+
+
 def handle_csv_file(csv_file):
     start_time = time.perf_counter()
     exist=False
@@ -214,41 +211,33 @@ def handle_csv_file(csv_file):
     # Handle CSV file processing
     file_data = csv_file.read().decode('utf-8')
     lines = file_data.split('\n')
-    lines.remove(lines[0])
-    lines.remove(lines[1])
-    lines.remove(lines[2])
+    # remove the first 3 lines
+    lines = lines[3:]
 
-    print('****', len(lines))
-    lines.remove(lines[-1])
-    lines.remove(lines[-2])
-    lines.remove(lines[-3])
+    # remove the line where the third column contain "Sub-Total Current Model:""
+    for i in range(len(lines) - 1, -1, -1):
+        if "Sub-Total Current Model:" in lines[i]:
+            del lines[i]
+            break
 
-
-    print('****lines', len(lines))
-
-    print('*********', lines)
-
-    lines = [line.split(';') for line in lines if line.strip()]  # Split each line by ';'
+    lines = [line.split(',') for line in lines if line.strip()]
     length_lines = len(lines)
-    print('lines de 2', lines[2][0].split(',')[-7])
-    substring = lines[2][0].split(',')[-7]
-    print('substring', substring)
+    substring = lines[0][9]
 
     end_date = substring.replace("=", "").replace('"', '')
     print('end_date', end_date)
 
-    
-    #end_dates = [line[9] for line in lines]
+    # Call the function to process the dates
+    formatted_lines = extract_and_convert_dates(lines)
+  
     exist_date_of_file = check_end_date_in_database("invoices", end_date)
     print('***exist_date_of_file***', exist_date_of_file)
 
     if exist_date_of_file:
-        print('exist file csv')
         exist=True
         delete_exist_data_invoices("invoices", end_date)
     # Create chunks
-    chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
-    print('chunks', chunks)
+    chunks = [formatted_lines[i:i + chunk_size] for i in range(0, len(formatted_lines), chunk_size)]
 
     # Process chunks concurrently
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -272,10 +261,10 @@ def handle_csv_file(csv_file):
     for future in futures:
         if future.result() is not None and 'invoices error' in future.result():
             print("The key 'invoices error' exists in the dictionary.")
-            #delete_all_insert_invoices()
+            delete_all_insert_invoices()
             return future.result()
 
-    result_migrate = migrate_from_invoices_alim_to_invoices(end_dates[0], length_lines)
+    result_migrate = migrate_from_invoices_alim_to_invoices(end_date, length_lines)
     print('result migrate invoices', result_migrate)
     if result_migrate is not None:
         if 'invoices error' in result_migrate:
@@ -445,7 +434,6 @@ def handle_sched_sec_file(file):
     exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
     print('exist_date_of_file', exist_date_of_file)
     if exist_date_of_file:
-        print('true')
         exist=True
         delete_exist_data("sched_sec", date_of_file)
 
@@ -575,17 +563,12 @@ def check_date_of_file_in_database(table_name, date_of_file):
     cur = conn.cursor()
     # Parse the input date string
     parsed_date = datetime.strptime(date_of_file, '%d/%m/%Y')
-    print('parsed_date', parsed_date)
     # Format the date to the desired format
     formatted_date = parsed_date.strftime('%Y-%m-%d')
-    print('formatted_date', formatted_date)
-
     # Execute a raw SQL query to check if the date exists in the database
     cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
     row = cur.fetchone()
-    print('roww', row)
     count = row[0]
-    print('count', count)
     return count
 
 def check_end_date_in_database(table_name, end_date):

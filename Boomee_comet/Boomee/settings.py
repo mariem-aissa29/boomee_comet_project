@@ -132,3 +132,5 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CSRF_TRUSTED_ORIGINS = ['https://comet.unite-consulting.fr']
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB in bytes

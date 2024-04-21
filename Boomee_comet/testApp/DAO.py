@@ -229,7 +229,7 @@ def migrate_from_summary_alim_to_summary(date_of_file, length_lines):
         except Exception as e:
             print("###################Exception" , e)
             error = {"summary error": 'erreur de migration de fichier de résumé'}
-
+            return error
 
     print("********************* Migration vers SUMMARY TEST Done ******************")
     res = cur.execute(f"select count(*) FROM summary WHERE date_of_file = %s", [date_of_file])
