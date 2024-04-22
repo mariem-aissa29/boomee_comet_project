@@ -13,16 +13,12 @@ connection_pool = psycopg2.pool.SimpleConnectionPool(
     database='test_boome'
 )
 
-"""
-This function retrieves a connection from the connection pool.
-"""
+#This function retrieves a connection from the connection pool.
 def get_connection():
     return connection_pool.getconn()
 
 
-"""
-This function releases a connection back to the connection pool.
-"""
+#This function releases a connection back to the connection pool.
 def release_connection(conn):
     connection_pool.putconn(conn)
 
@@ -570,7 +566,6 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file, length_lines):
  
 
     return {'rowcounts': result[0], 'file_data_lines': length_lines}
-
 
 # Function to delete 'usage_detail_alim' table and recreate it
 def delete_all_insert_usage_detail():
