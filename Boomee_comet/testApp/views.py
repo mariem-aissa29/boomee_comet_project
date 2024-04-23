@@ -38,7 +38,7 @@ def homePage(request):
     print('home page')
     success_messages = []
     error_messages = {}
-    #user_name = request.user.username
+    user_name = request.user.username
     print('request method', request.method)
     if request.method == 'POST':
             csv_file = request.FILES.get('upload-invoices')
