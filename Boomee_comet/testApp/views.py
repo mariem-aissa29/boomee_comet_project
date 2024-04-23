@@ -495,7 +495,27 @@ def insert_sched_sec_file(row):
 
 
 def sched_sec_file_hand(file):
+    print('file size', file.size)
     print('my file sched sec', file.name)
+    start_time = time.perf_counter()
+    exist=False
+    # Define chunk size and max workers
+    chunk_size = 5000
+    max_workers = 10
+    # Handle text file processing
+    name = file.name
+    date_str = name[-6:]
+    year = date_str[:4]
+    month = date_str[4:]
+    date_of_file = month + "/01/" + year
+    print('date_of_file sched sec', date_of_file)
+
+    # Record the end time
+    end_time = time.perf_counter()
+    # Calculate the elapsed time
+    elapsed_time = end_time - start_time
+    print(f"The function took {elapsed_time} seconds to complete.")
+
 
 def handle_usage_detail_file(file):
     start_time = time.perf_counter()
