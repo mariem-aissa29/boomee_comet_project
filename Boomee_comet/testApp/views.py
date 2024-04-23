@@ -113,7 +113,7 @@ def homePage(request):
                 # Get the file extension
                 file_extension = sched_sec_file.name
                 exist_message_sched_sec=""
-                sched_sec_file(sched_sec_file)
+                sched_sec_file_hand(sched_sec_file)
                 # if '.' not in file_extension:
                 #     message_sched_sec = handle_sched_sec_file(sched_sec_file)
                 #     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
@@ -494,7 +494,7 @@ def insert_sched_sec_file(row):
 
 
 
-def sched_sec_file(file):
+def sched_sec_file_hand(file):
     print('my file sched sec', file.name)
 
 def handle_usage_detail_file(file):
