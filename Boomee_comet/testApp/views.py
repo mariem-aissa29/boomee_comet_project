@@ -38,7 +38,8 @@ def homePage(request):
     print('home page')
     success_messages = []
     error_messages = {}
-    user_name = request.user.username
+    #user_name = request.user.username
+    print('request method', request.method)
     if request.method == 'POST':
             csv_file = request.FILES.get('upload-invoices')
             summary_file = request.FILES.get('upload-summary')
@@ -509,6 +510,9 @@ def sched_sec_file_hand(file):
     month = date_str[4:]
     date_of_file = month + "/01/" + year
     print('date_of_file sched sec', date_of_file)
+
+    exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
+    print('exist_date_of_file', exist_date_of_file)
 
     # Record the end time
     end_time = time.perf_counter()
