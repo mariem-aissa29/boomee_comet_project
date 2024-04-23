@@ -13,5 +13,5 @@ def get_connection():
     return connection_pool.getconn()
 
 
-def put_connection(conn):
+def release_connection(conn):
     connection_pool.putconn(conn)

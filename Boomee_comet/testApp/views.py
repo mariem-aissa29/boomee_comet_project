@@ -24,12 +24,13 @@ import psycopg2
 from psycopg2 import pool
 from django.http import JsonResponse
 from datetime import datetime
-from connexion_pool import get_connection
+from connexion_pool import get_connection, release_connection
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 def is_superuser(user):
     return user.is_superuser
+
 
 
 @login_required(login_url='login')
@@ -426,6 +427,7 @@ def handle_sched_sec_file(file):
     print('date_of_file sched sec', date_of_file)
 
     exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
+    print('exist_date_of_file', exist_date_of_file)
     if exist_date_of_file:
         exist=True
         delete_exist_data("sched_sec", date_of_file)
@@ -610,6 +612,7 @@ def delete_exist_data(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        print('delete exist data')
         cur.execute(f"delete FROM {table_name} WHERE date_of_file = %s", [date_of_file])
         conn.commit()
     except Exception as e:
