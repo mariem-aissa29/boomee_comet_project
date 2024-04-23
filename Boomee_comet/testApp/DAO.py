@@ -53,7 +53,7 @@ def insert_record_into_invoices_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"invoices error": 'erreur d\'insertion de factures dans la table alim'}
+        error = {"invoices error": 'erreur d\'insertion de invoices dans la table alim'}
         return error
     finally:
         # Release the database connection
@@ -117,7 +117,7 @@ def migrate_from_invoices_alim_to_invoices(end_date, length_lines):
         except Exception as e:
             # Collect queries that caused exceptions
             exception_queries.append(query)
-            error = {"invoices error": 'erreur de migration de fichier de factures'}
+            error = {"invoices error": 'erreur de migration de fichier invoices'}
             return error
     
     res = cur.execute(f"select count(*) FROM invoices WHERE end_date = %s", [end_date])
@@ -195,7 +195,7 @@ def insert_record_into_summary_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"summary error": 'erreur d\'insertion de résumé dans la table alim '}
+        error = {"summary error": 'erreur d\'insertion de summary dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -224,7 +224,7 @@ def migrate_from_summary_alim_to_summary(date_of_file, length_lines):
 
         except Exception as e:
             print("###################Exception" , e)
-            error = {"summary error": 'erreur de migration de fichier de résumé'}
+            error = {"summary error": 'erreur de migration de fichier de summary'}
             return error
 
     print("********************* Migration vers SUMMARY TEST Done ******************")
@@ -290,7 +290,7 @@ def insert_record_into_sched_sum_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred during insertion: {e}")
-        error = {"sched sum error": 'erreur d\'insertion de résumé planifié dans la table alim '}
+        error = {"sched sum error": 'erreur d\'insertion de sched sum dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -342,7 +342,7 @@ def migrate_from_sched_sum_alim_to_sched_sum(date_of_file, length_lines):
 
         except Exception as e:
             print("###################Exception" , e)
-            error = {"sched sum error": 'erreur de migration de fichier de résumé planifié'}
+            error = {"sched sum error": 'erreur de migration de fichier de sched sum'}
             return error
     print("********************* Migration vers sched sum test Done ******************")
     # Commit and close connections
@@ -410,7 +410,7 @@ def insert_record_into_sched_sec_alim(chunk):
     except Exception as e:
         # Handle exceptions during insertion
         print(f"An error occurred: {e}")
-        error = {"sched sec error": 'erreur d\'insertion de titres planifiés dans la table alim '}
+        error = {"sched sec error": 'erreur d\'insertion de sched sec dans la table alim '}
         return error
     finally:
         # Release the database connection
@@ -447,7 +447,7 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file, length_lines):
             print("nombre de MISE A JOUR ", cur.rowcount)
         except Exception as e:
             print("###################Exception", e)
-            error = {"sched sec error": 'erreur de migration de titres planifiés'}
+            error = {"sched sec error": 'erreur de migration de sched sec'}
             return error
 
     # Commit and close connections
@@ -515,7 +515,7 @@ def insert_record_into_usage_detail_alim(chunk):
         print("Inserted", len(chunk), "records")
     except Exception as e:
         # Handle exceptions during insertion
-        error = {"usage detail error": 'erreur d\'insertion de détail d\'utilisation dans la table alim '}
+        error = {"usage detail error": 'erreur d\'insertion de usage detail dans la table alim '}
         return error
     finally:
         # Release the database connection

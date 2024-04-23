@@ -5,7 +5,7 @@
 Once you have all the needed requirements installed, clone the project:
 
 ``` bash
-https://github.com/Unite-Consulting/Comet.git
+https://github.com/mariem-aissa29/boomee_comet_project.git
 ```
 
 ### Installation

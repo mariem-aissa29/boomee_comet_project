@@ -90,15 +90,16 @@ def homePage(request):
             if sched_sum_file:
                 # Get the file extension
                 file_extension = sched_sum_file.name
+                exist_message_sched_summary=""
                 if '.' not in file_extension:
                     message_sched_sum = handle_sched_sum_file(sched_sum_file)
                     if message_sched_sum is not None and 'sched sum error' in message_sched_sum:
                         error_messages['error_message_sched_sum'] = message_sched_sum['sched sum error']
                     else:
                         if message_sched_sum['exist']:
-                            exist_message_summary = "Fichier scheduled summary déjà existe et remplacé avec succées;;   "
+                            exist_message_sched_summary = "Fichier scheduled summary déjà existe et remplacé avec succées;;   "
                         if message_sched_sum['file_data_lines'] == message_sched_sum['rowcounts']:
-                            success_messages.append(exist_message_summary+"Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes")
+                            success_messages.append(exist_message_sched_summary+"Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes")
                         else:
                             error_messages['error_message_data_not_uploaded'] = "Fichier scheduled summary déjà existe ;; Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes"
                 else:
@@ -400,6 +401,7 @@ def handle_sched_sum_file(file):
             return future.result()
 
     result_migrate = migrate_from_sched_sum_alim_to_sched_sum(date_of_file, length_lines)
+    print('result migrate', result_migrate)
     if result_migrate is not None and 'sched sum error' in result_migrate:
         delete_all_insert_sched_sum()
         return result_migrate
@@ -473,6 +475,7 @@ def handle_sched_sec_file(file):
             return future.result()
 
     result_migrate = migrate_from_sched_sec_alim_to_sched_sec(date_of_file, length_lines)
+    print('result_migrate', result_migrate)
     if result_migrate is not None and 'sched sec error' in result_migrate:
         delete_all_insert_sched_sec()
         return result_migrate
@@ -546,6 +549,7 @@ def handle_usage_detail_file(file):
             return future.result()
 
     result_migrate = migrate_from_usage_detail_alim_to_usage_detail(date_of_file, length_lines)
+    print('result_migrate', result_migrate)
 
     if result_migrate is not None and 'usage detail error' in result_migrate:
         delete_all_insert_usage_detail()
@@ -565,19 +569,11 @@ def check_date_of_file_in_database(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        print('conn get', conn)
-        print('cur', cur)
-        # Parse the input date string
-        parsed_date = datetime.strptime(date_of_file, '%d/%m/%Y')
-        print('parsed date', parsed_date)
-        # Format the date to the desired format
-        formatted_date = parsed_date.strftime('%Y-%m-%d')
-        print('formatted_date', formatted_date)
         # Execute a raw SQL query to check if the date exists in the database
-        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [formatted_date])
+        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
         print('after selecr query')
         row = cur.fetchone()
-        print('**row**', row, 'form date', formatted_date)
+        print('**row**', row)
 
         print('Close cursor and connection')
         if row is None:
