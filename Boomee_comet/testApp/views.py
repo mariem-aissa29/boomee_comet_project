@@ -519,8 +519,12 @@ def sched_sec_file_hand(file):
     date_of_file = month + "/01/" + year
     print('date_of_file sched sec', date_of_file)
 
-    exist_date_of_file = check_date_of_file_in_database("usage_detail", date_of_file)
+    exist_date_of_file = check_date_of_file_in_database("sched_sec_test", date_of_file)
     print('exist_date_of_file', exist_date_of_file)
+
+    if exist_date_of_file:
+        exist=True
+        delete_exist_data("sched_sec_test", date_of_file)
 
     # Record the end time
     end_time = time.perf_counter()
