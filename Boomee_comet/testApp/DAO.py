@@ -1,26 +1,26 @@
 import psycopg2
-from connexion_pool import get_connection
+from connexion_pool import get_connection, release_connection
 import time
 
 
-connection_pool = psycopg2.pool.SimpleConnectionPool(
-    1,  # Minimum connections
-    200,  # Maximum connections
-    user='boome_admin',
-    password='AzureDb13?',
-    host='boomedb.postgres.database.azure.com',
-    port='5432',
-    database='test_boome'
-)
+# connection_pool = psycopg2.pool.SimpleConnectionPool(
+#     1,  # Minimum connections
+#     200,  # Maximum connections
+#     user='boome_admin',
+#     password='AzureDb13?',
+#     host='boomedb.postgres.database.azure.com',
+#     port='5432',
+#     database='test_boome'
+# )
 
-#This function retrieves a connection from the connection pool.
-def get_connection():
-    return connection_pool.getconn()
+# #This function retrieves a connection from the connection pool.
+# def get_connection():
+#     return connection_pool.getconn()
 
 
-#This function releases a connection back to the connection pool.
-def release_connection(conn):
-    connection_pool.putconn(conn)
+# #This function releases a connection back to the connection pool.
+# def release_connection(conn):
+#     connection_pool.putconn(conn)
 
 
 # Function to insert records into the 'invoices_alim' table
@@ -57,6 +57,7 @@ def insert_record_into_invoices_alim(chunk):
         return error
     finally:
         # Release the database connection
+        cur.close()
         release_connection(conn)
 
 # Function to migrate data from 'invoices_alim' to 'invoices' table
@@ -123,7 +124,7 @@ def migrate_from_invoices_alim_to_invoices(end_date, length_lines):
     res = cur.execute(f"select count(*) FROM invoices WHERE end_date = %s", [end_date])
     result = cur.fetchone()
     cur.close()
-    conn.close()
+    release_connection(conn)
     # Retry executing exception queries
     for exception in exception_queries:
         conn = get_connection()
@@ -131,7 +132,7 @@ def migrate_from_invoices_alim_to_invoices(end_date, length_lines):
         cur.execute(exception)
         conn.commit()
         cur.close()
-        conn.close()
+        release_connection(conn)
     print("********************* Migration vers INVOIVES DONE  Done ******************")
 
 
@@ -160,7 +161,7 @@ def delete_all_insert_invoices():
     # Commit and close connections
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
 
 
@@ -199,6 +200,7 @@ def insert_record_into_summary_alim(chunk):
         return error
     finally:
         # Release the database connection
+        cur.close()
         release_connection(conn)
 
 # Function to migrate data from 'Summary_alim_test' to 'summary' table
@@ -232,7 +234,7 @@ def migrate_from_summary_alim_to_summary(date_of_file, length_lines):
     result = cur.fetchone()
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
     return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
@@ -257,7 +259,7 @@ def delete_all_insert_sum():
 
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
 
 
@@ -294,6 +296,7 @@ def insert_record_into_sched_sum_alim(chunk):
         return error
     finally:
         # Release the database connection
+        cur.close()
         release_connection(conn)
 
 # Function to migrate data from 'sched_sum_alim_test' to 'sched_sum' table
@@ -350,7 +353,7 @@ def migrate_from_sched_sum_alim_to_sched_sum(date_of_file, length_lines):
     result = cur.fetchone()
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
     return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
@@ -378,7 +381,7 @@ def delete_all_insert_sched_sum():
     # Commit and close connections
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
 
 
@@ -455,7 +458,7 @@ def migrate_from_sched_sec_alim_to_sched_sec(date_of_file, length_lines):
     result = cur.fetchone()
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
     return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
@@ -481,7 +484,7 @@ def delete_all_insert_sched_sec():
     # Commit and close connections
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
 
 
@@ -519,6 +522,7 @@ def insert_record_into_usage_detail_alim(chunk):
         return error
     finally:
         # Release the database connection
+        cur.close()
         release_connection(conn)
 
 # Function to migrate data from 'usage_detail_alim' to 'usage_detail' table
@@ -563,9 +567,8 @@ def migrate_from_usage_detail_alim_to_usage_detail(date_of_file, length_lines):
 
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
  
-
     return {'rowcounts': result[0], 'file_data_lines': length_lines}
 
 # Function to delete 'usage_detail_alim' table and recreate it
@@ -591,7 +594,7 @@ def delete_all_insert_usage_detail():
     # Commit and close connections
     conn.commit()
     cur.close()
-    conn.close()
+    release_connection(conn)
 
 def main():
     print("Hello")

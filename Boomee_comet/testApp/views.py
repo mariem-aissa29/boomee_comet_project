@@ -107,6 +107,7 @@ def homePage(request):
 
 
             if sched_sec_file:
+                print('hello sched sec')
                 # Get the file extension
                 file_extension = sched_sec_file.name
                 exist_message_sched_sec=""
@@ -428,11 +429,11 @@ def handle_sched_sec_file(file):
     date_of_file = month + "/01/" + year
     print('date_of_file sched sec', date_of_file)
 
-    exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
-    print('exist_date_of_file', exist_date_of_file)
-    if exist_date_of_file:
-        exist=True
-        delete_exist_data("sched_sec", date_of_file)
+    # exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
+    # print('exist_date_of_file', exist_date_of_file)
+    # if exist_date_of_file:
+    #     exist=True
+    #     delete_exist_data("sched_sec", date_of_file)
 
     file_data = file.read().decode('utf-8')
     lines = file_data.split('\n')
@@ -580,8 +581,6 @@ def check_date_of_file_in_database(table_name, date_of_file):
             return False  
         else:
             return True 
-        # Commit the transaction
-        conn.commit()
         print("Inserted", len(chunk), "records")
     except Exception as e:
         print(f"exception select: {e}")
@@ -601,7 +600,7 @@ def check_end_date_in_database(table_name, end_date):
     row = cur.fetchone()
     count = row[0]
     cur.close()
-    conn.close() 
+    release_connection(conn) 
     return count
 
 def delete_exist_data(table_name, date_of_file):
@@ -623,4 +622,4 @@ def delete_exist_data_invoices(table_name, end_date):
     cur.execute(f"delete FROM {table_name} WHERE end_date = %s", [end_date])
     conn.commit()
     cur.close()
-    conn.close() 
+    release_connection(conn)
