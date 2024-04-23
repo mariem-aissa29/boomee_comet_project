@@ -46,6 +46,8 @@ def homePage(request):
             sched_sec_file = request.FILES.get('upload-sched-sec')
             usage_detail_file = request.FILES.get('upload-usage-detail')
 
+            print('sched sec file')
+
             if csv_file:
                 # Get the file extension
                 file_extension = csv_file.name.split('.')[-1].lower()
@@ -111,20 +113,21 @@ def homePage(request):
                 # Get the file extension
                 file_extension = sched_sec_file.name
                 exist_message_sched_sec=""
-                if '.' not in file_extension:
-                    message_sched_sec = handle_sched_sec_file(sched_sec_file)
-                    if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
-                        error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
-                    else:
-                        if message_sched_sec['exist']:
-                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
+                sched_sec_file(sched_sec_file)
+                # if '.' not in file_extension:
+                #     message_sched_sec = handle_sched_sec_file(sched_sec_file)
+                #     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
+                #         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
+                #     else:
+                #         if message_sched_sec['exist']:
+                #             exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
                             
-                        if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
-                            success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
-                        else:
-                            error_messages['error_message_data_not_uploaded'] = "Fichier scheduled securities déjà existe ;; Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes"
-                else:
-                    error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
+                #         if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
+                #             success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
+                #         else:
+                #             error_messages['error_message_data_not_uploaded'] = "Fichier scheduled securities déjà existe ;; Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes"
+                # else:
+                #     error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
 
 
             if usage_detail_file:
@@ -488,6 +491,11 @@ def insert_sched_sec_file(row):
     data = insert_record_into_sched_sec_alim(row)
     return data
 
+
+
+
+def sched_sec_file(file):
+    print('my file sched sec', file.name)
 
 def handle_usage_detail_file(file):
     start_time = time.perf_counter()
