@@ -526,6 +526,36 @@ def sched_sec_file_hand(file):
         exist=True
         delete_exist_data("sched_sec_test", date_of_file)
 
+    file_data = file.read().decode('utf-8')
+    lines = file_data.split('\n')
+    
+    # Split each line and remove header
+    lines = [line.split('|') for line in lines[1:] if line.strip()]
+    length_lines = len(lines)
+
+    # Create chunks
+    chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
+
+    # Process chunks concurrently
+    # initializes a ThreadPoolExecutor object. 
+    # The max_workers argument specifies the maximum number of worker threads in the thread pool
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # This line initializes an empty list futures. 
+        # This list will store the Future objects returned by the submit method, 
+        # representing the asynchronous execution of each task.
+        futures = []
+        for chunk in chunks:
+            future = executor.submit(insert_sched_sec_file, chunk)
+            futures.append(future)
+
+        # Wait for all tasks to complete
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()  # Wait for the task to finish
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+
     # Record the end time
     end_time = time.perf_counter()
     # Calculate the elapsed time
