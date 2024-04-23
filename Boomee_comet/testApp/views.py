@@ -574,10 +574,10 @@ def check_date_of_file_in_database(table_name, date_of_file):
         formatted_date = parsed_date.strftime('%Y-%m-%d')
         print('formatted_date', formatted_date)
         # Execute a raw SQL query to check if the date exists in the database
-        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
+        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [formatted_date])
         print('after selecr query')
         row = cur.fetchone()
-        print('**row**', row)
+        print('**row**', row, 'form date', formatted_date)
 
         print('Close cursor and connection')
         if row is None:

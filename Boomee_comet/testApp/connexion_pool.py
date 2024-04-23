@@ -6,7 +6,8 @@ connection_pool = pool.SimpleConnectionPool(1, 10,  # Minimum and maximum connec
                                             password="AzureDb13?",
                                             host="boomedb.postgres.database.azure.com",
                                             port="5432",
-                                            database="test_boome")
+                                            database="test_boome",
+                                            connect_timeout=20) # in sec
 
 
 def get_connection():
