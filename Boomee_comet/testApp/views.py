@@ -423,7 +423,7 @@ def handle_sched_sec_file(file):
     year = date_str[:4]
     month = date_str[4:]
     date_of_file = month + "/01/" + year
-    print('date_of_file', date_of_file)
+    print('date_of_file sched sec', date_of_file)
 
     exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
     if exist_date_of_file:
@@ -562,19 +562,35 @@ def insert_usage_detail_file(row):
 def check_date_of_file_in_database(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
-    # Parse the input date string
-    parsed_date = datetime.strptime(date_of_file, '%d/%m/%Y')
+    try:
+        print('conn get', conn)
+        print('cur', cur)
+        # Parse the input date string
+        parsed_date = datetime.strptime(date_of_file, '%d/%m/%Y')
+        print('parsed date', parsed_date)
+        # Format the date to the desired format
+        formatted_date = parsed_date.strftime('%Y-%m-%d')
+        print('formatted_date', formatted_date)
+        # Execute a raw SQL query to check if the date exists in the database
+        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
+        print('after selecr query')
+        row = cur.fetchone()
+        print('**row**', row)
 
-    # Format the date to the desired format
-    formatted_date = parsed_date.strftime('%Y-%m-%d')
-
-    # Execute a raw SQL query to check if the date exists in the database
-    cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
-    row = cur.fetchone()
-    if row is None:
-        return False  
-    else:
-        return True 
+        print('Close cursor and connection')
+        if row is None:
+            return False  
+        else:
+            return True 
+        # Commit the transaction
+        conn.commit()
+        print("Inserted", len(chunk), "records")
+    except Exception as e:
+        print(f"exception select: {e}")
+    finally:
+        # Release the database connection
+        cur.close()
+        release_connection(conn)
 
 def check_end_date_in_database(table_name, end_date):
     conn = get_connection()
@@ -593,10 +609,14 @@ def check_end_date_in_database(table_name, end_date):
 def delete_exist_data(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute(f"delete FROM {table_name} WHERE date_of_file = %s", [date_of_file])
-    conn.commit()
-    cur.close()
-    conn.close() 
+    try:
+        cur.execute(f"delete FROM {table_name} WHERE date_of_file = %s", [date_of_file])
+        conn.commit()
+    except Exception as e:
+        print(f"exception select: {e}")
+    finally:
+        cur.close()
+        release_connection(conn)
 
 def delete_exist_data_invoices(table_name, end_date):
     conn = get_connection()

@@ -387,8 +387,8 @@ def insert_record_into_sched_sec_alim(chunk):
     print('Processing chunk sched sec...')
     # Establish a database connection
     conn = get_connection()
+    cur = conn.cursor()
     try:
-        cur = conn.cursor()
         # Construct the INSERT SQL statement
         insert_query = """
                             INSERT INTO sched_sec_alim
@@ -414,6 +414,7 @@ def insert_record_into_sched_sec_alim(chunk):
         return error
     finally:
         # Release the database connection
+        cur.close()
         release_connection(conn)
 
 # Function to migrate data from 'sched_sec_alim' to 'sched_sec' table
