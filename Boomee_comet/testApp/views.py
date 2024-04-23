@@ -31,6 +31,12 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 def is_superuser(user):
     return user.is_superuser
 
+class csvImportForm(forms.Form):
+    csv_upload = forms.FileField(label='Upload invoices file', required=False )
+    summary_file = forms.FileField(label='Upload Summary File', required=False)
+    sched_sum_file = forms.FileField(label='Upload Scheduled Summary file', required=False)
+    sched_sec_file = forms.FileField(label='Upload Scheduled Securities file', required=False)
+    usage_detail_file = forms.FileField(label='Upload Usage Detail file', required=False)
 
 
 @login_required(login_url='login')
@@ -41,6 +47,8 @@ def homePage(request):
     user_name = request.user.username
     print('request method', request.method)
     if request.method == 'POST':
+        form = csvImportForm(request.POST, request.FILES)
+        if form.is_valid():
             csv_file = request.FILES.get('upload-invoices')
             summary_file = request.FILES.get('upload-summary')
             sched_sum_file = request.FILES.get('upload-sched-summary')
