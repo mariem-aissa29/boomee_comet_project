@@ -122,21 +122,20 @@ def homePage(request):
                 # Get the file extension
                 file_extension = sched_sec_file.name
                 exist_message_sched_sec=""
-                sched_sec_file_hand(sched_sec_file)
-                # if '.' not in file_extension:
-                #     message_sched_sec = handle_sched_sec_file(sched_sec_file)
-                #     if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
-                #         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
-                #     else:
-                #         if message_sched_sec['exist']:
-                #             exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
+                if '.' not in file_extension:
+                    message_sched_sec = handle_sched_sec_file(sched_sec_file)
+                    if message_sched_sec is not None and 'sched sec error' in message_sched_sec:
+                        error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
+                    else:
+                        if message_sched_sec['exist']:
+                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
                             
-                #         if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
-                #             success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
-                #         else:
-                #             error_messages['error_message_data_not_uploaded'] = "Fichier scheduled securities déjà existe ;; Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes"
-                # else:
-                #     error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
+                        if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
+                            success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
+                        else:
+                            error_messages['error_message_data_not_uploaded'] = "Fichier scheduled securities déjà existe ;; Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes"
+                else:
+                    error_messages['error_message_extension_sched_sec'] = "Vérifier l'extension du fichier de titres planifiés"
 
 
             if usage_detail_file:
@@ -441,11 +440,11 @@ def handle_sched_sec_file(file):
     date_of_file = month + "/01/" + year
     print('date_of_file sched sec', date_of_file)
 
-    # exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
-    # print('exist_date_of_file', exist_date_of_file)
-    # if exist_date_of_file:
-    #     exist=True
-    #     delete_exist_data("sched_sec", date_of_file)
+    exist_date_of_file = check_date_of_file_in_database("sched_sec", date_of_file)
+    print('exist_date_of_file', exist_date_of_file)
+    if exist_date_of_file:
+        exist=True
+        delete_exist_data("sched_sec", date_of_file)
 
     file_data = file.read().decode('utf-8')
     lines = file_data.split('\n')
@@ -500,67 +499,6 @@ def insert_sched_sec_file(row):
     data = insert_record_into_sched_sec_alim(row)
     return data
 
-
-
-
-def sched_sec_file_hand(file):
-    print('file size', file.size)
-    print('my file sched sec', file.name)
-    start_time = time.perf_counter()
-    exist=False
-    # Define chunk size and max workers
-    chunk_size = 5000
-    max_workers = 10
-    # Handle text file processing
-    name = file.name
-    date_str = name[-6:]
-    year = date_str[:4]
-    month = date_str[4:]
-    date_of_file = month + "/01/" + year
-    print('date_of_file sched sec', date_of_file)
-
-    # exist_date_of_file = check_date_of_file_in_database("sched_sec_test", date_of_file)
-    # print('exist_date_of_file', exist_date_of_file)
-
-    # if exist_date_of_file:
-    #     exist=True
-    #     delete_exist_data("sched_sec_test", date_of_file)
-
-    file_data = file.read().decode('utf-8')
-    lines = file_data.split('\n')
-
-    # Split each line and remove header
-    lines = [line.split('|') for line in lines[1:] if line.strip()]
-    length_lines = len(lines)
-
-    # Create chunks
-    chunks = [lines[i:i + chunk_size] for i in range(0, len(lines), chunk_size)]
-
-    # Process chunks concurrently
-    # initializes a ThreadPoolExecutor object. 
-    # The max_workers argument specifies the maximum number of worker threads in the thread pool
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # This line initializes an empty list futures. 
-        # This list will store the Future objects returned by the submit method, 
-        # representing the asynchronous execution of each task.
-        futures = []
-        for chunk in chunks:
-            future = executor.submit(insert_sched_sec_file, chunk)
-            futures.append(future)
-
-        # Wait for all tasks to complete
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                future.result()  # Wait for the task to finish
-            except Exception as e:
-                print(f"An error occurred: {e}")
-
-
-    # Record the end time
-    end_time = time.perf_counter()
-    # Calculate the elapsed time
-    elapsed_time = end_time - start_time
-    print(f"The function took {elapsed_time} seconds to complete.")
 
 
 def handle_usage_detail_file(file):
