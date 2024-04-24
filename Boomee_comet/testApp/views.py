@@ -204,7 +204,9 @@ def extract_and_convert_dates(data_list):
         if len(item) >= 10:
             # Extract the date parts
             date_parts = [part.replace('="', '').replace('"', '').strip() for part in item[8:10]]
+            optimization_fact = item[13].replace('="', '').replace('"', '')
             item[8:10] = date_parts
+            item[13] = optimization_fact
     
     return data_list
 
@@ -585,7 +587,7 @@ def check_date_of_file_in_database(table_name, date_of_file):
     try:
         print('date of file', date_of_file)
         # Execute a raw SQL query to check if the date exists in the database
-        cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
+        cur.execute(f"SELECT 1 FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
         print('after selecr query')
         row = cur.fetchone()
         print('**row**', row)
@@ -595,7 +597,6 @@ def check_date_of_file_in_database(table_name, date_of_file):
             return False  
         else:
             return True 
-        print("Inserted", len(chunk), "records")
     except Exception as e:
         print(f"exception select: {e}")
     finally:
