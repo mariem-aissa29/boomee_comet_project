@@ -40,6 +40,7 @@ class csvImportForm(forms.Form):
 
 
 @login_required(login_url='login')
+@user_passes_test(is_superuser)
 def homePage(request):
     print('home page')
     success_messages = []
@@ -71,7 +72,7 @@ def homePage(request):
                         error_messages['error_message_invoices'] = message_invoices['invoices error']
                     else:
                         if message_invoices['exist']:
-                            exist_message_invoices = "Fichier invoices déjà existe et remplacé avec succées;;   "
+                            exist_message_invoices = "Fichier invoices déjà existe et remplacé avec succés;;   "
                         if message_invoices['file_data_lines'] == message_invoices['rowcounts']:
                             success_messages.append(exist_message_invoices+"Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes")
                         else:
@@ -88,7 +89,7 @@ def homePage(request):
                         error_messages['error_message_sum'] = message_sum['sum error']
                     else:
                         if message_sum['exist']:
-                            exist_message_summary = "Fichier summary déjà existe et remplacé avec succées;;   "
+                            exist_message_summary = "Fichier summary déjà existe et remplacé avec succés;;   "
                         if message_sum['file_data_lines'] == message_sum['rowcounts']:
                             success_messages.append(exist_message_summary+"Nombre de lignes dans le fichier summary: "+ str(message_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sum['rowcounts']) +" lignes")
                         else:
@@ -108,7 +109,7 @@ def homePage(request):
                         error_messages['error_message_sched_sum'] = message_sched_sum['sched sum error']
                     else:
                         if message_sched_sum['exist']:
-                            exist_message_sched_summary = "Fichier scheduled summary déjà existe et remplacé avec succées;;   "
+                            exist_message_sched_summary = "Fichier scheduled summary déjà existe et remplacé avec succés;;   "
                         if message_sched_sum['file_data_lines'] == message_sched_sum['rowcounts']:
                             success_messages.append(exist_message_sched_summary+"Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes")
                         else:
@@ -128,7 +129,7 @@ def homePage(request):
                         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
                     else:
                         if message_sched_sec['exist']:
-                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succées;;   "
+                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succés;;   "
                             
                         if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
                             success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
@@ -148,7 +149,7 @@ def homePage(request):
                         error_messages['error_message_usage_detail'] = message_usage_detail['usage detail error']
                     else:
                         if message_usage_detail['exist']:
-                            exist_message_usage_detail = "Fichier usage détail déjà existe et remplacé avec succées;;   "
+                            exist_message_usage_detail = "Fichier usage détail déjà existe et remplacé avec succés;;   "
                             
                         if message_usage_detail['file_data_lines'] == message_usage_detail['rowcounts']:
                             success_messages.append(exist_message_usage_detail+"Nombre de lignes dans le fichier usage detail: "+ str(message_usage_detail['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_usage_detail['rowcounts']) +" lignes")
@@ -582,6 +583,7 @@ def check_date_of_file_in_database(table_name, date_of_file):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        print('date of file', date_of_file)
         # Execute a raw SQL query to check if the date exists in the database
         cur.execute(f"SELECT * FROM {table_name} WHERE date_of_file = %s LIMIT 1", [date_of_file])
         print('after selecr query')
@@ -604,9 +606,11 @@ def check_date_of_file_in_database(table_name, date_of_file):
 def check_end_date_in_database(table_name, end_date):
     conn = get_connection()
     cur = conn.cursor()
+
+    print('end date', end_date)
     # Parse the input date string
     parsed_date = datetime.strptime(end_date, '%m/%d/%Y')
-
+    print('parsed_date', parsed_date)
     # Execute a raw SQL query to check if the date exists in the database
     cur.execute(f"SELECT COUNT(*) FROM {table_name} WHERE end_date = %s", [parsed_date])
     row = cur.fetchone()

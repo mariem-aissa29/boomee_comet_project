@@ -186,7 +186,9 @@ a {
           <ul>
             <li class="active"><a href="/report">Rapport</a></li>
             <li></li>
+            {% if user.is_superuser %}
             <li ><a href="/home">Charger des fichiers</a></li>
+            {% endif %}
 
           </ul>
         </div>
@@ -194,7 +196,7 @@ a {
     </div>
   </div>
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-          <h6 style="margin-left: 320px; color: #000000;">Bonjour, {{ user_name }}</h6>
+          <h6 style="margin-left: 320px; "></h6>
 
       <div class="col-md-3 text-end">
         <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Se déconnecter</a>
