@@ -135,8 +135,8 @@ CSRF_TRUSTED_ORIGINS = ['https://comet.unite-consulting.fr']
 
 
 
-# 200 MB max for request data
-FILE_UPLOAD_MAX_MEMORY_SIZE = 314572800 
+# 400 MB max for request data
+FILE_UPLOAD_MAX_MEMORY_SIZE = 419430400 
 
-# 200 MB max for request data
-DATA_UPLOAD_MAX_MEMORY_SIZE = 314572800
+# 400 MB max for request data
+DATA_UPLOAD_MAX_MEMORY_SIZE = 419430400
