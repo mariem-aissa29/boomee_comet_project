@@ -72,7 +72,7 @@ def homePage(request):
                         error_messages['error_message_invoices'] = message_invoices['invoices error']
                     else:
                         if message_invoices['exist']:
-                            exist_message_invoices = "Fichier invoices déjà existe et remplacé avec succés;;   "
+                            exist_message_invoices = "Fichier invoices déjà existe et remplacé avec succès;;   "
                         if message_invoices['file_data_lines'] == message_invoices['rowcounts']:
                             success_messages.append(exist_message_invoices+"Nombre de lignes dans le fichier invoices: "+ str(message_invoices['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_invoices['rowcounts']) +" lignes")
                         else:
@@ -89,7 +89,7 @@ def homePage(request):
                         error_messages['error_message_sum'] = message_sum['sum error']
                     else:
                         if message_sum['exist']:
-                            exist_message_summary = "Fichier summary déjà existe et remplacé avec succés;;   "
+                            exist_message_summary = "Fichier summary déjà existe et remplacé avec succès;;   "
                         if message_sum['file_data_lines'] == message_sum['rowcounts']:
                             success_messages.append(exist_message_summary+"Nombre de lignes dans le fichier summary: "+ str(message_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sum['rowcounts']) +" lignes")
                         else:
@@ -109,7 +109,7 @@ def homePage(request):
                         error_messages['error_message_sched_sum'] = message_sched_sum['sched sum error']
                     else:
                         if message_sched_sum['exist']:
-                            exist_message_sched_summary = "Fichier scheduled summary déjà existe et remplacé avec succés;;   "
+                            exist_message_sched_summary = "Fichier scheduled summary déjà existe et remplacé avec succès;;   "
                         if message_sched_sum['file_data_lines'] == message_sched_sum['rowcounts']:
                             success_messages.append(exist_message_sched_summary+"Nombre de lignes dans le fichier scheduled summary: "+ str(message_sched_sum['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sum['rowcounts']) +" lignes")
                         else:
@@ -129,7 +129,7 @@ def homePage(request):
                         error_messages['error_message_sched_sec'] = message_sched_sec['sched sec error']
                     else:
                         if message_sched_sec['exist']:
-                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succés;;   "
+                            exist_message_sched_sec = "Fichier scheduled securities déjà existe et remplacé avec succès;;   "
                             
                         if message_sched_sec['file_data_lines'] == message_sched_sec['rowcounts']:
                             success_messages.append(exist_message_sched_sec+"Nombre de lignes dans le fichier scheduled securities: "+ str(message_sched_sec['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_sched_sec['rowcounts']) +" lignes")
@@ -149,7 +149,7 @@ def homePage(request):
                         error_messages['error_message_usage_detail'] = message_usage_detail['usage detail error']
                     else:
                         if message_usage_detail['exist']:
-                            exist_message_usage_detail = "Fichier usage détail déjà existe et remplacé avec succés;;   "
+                            exist_message_usage_detail = "Fichier usage détail déjà existe et remplacé avec succès;;   "
                             
                         if message_usage_detail['file_data_lines'] == message_usage_detail['rowcounts']:
                             success_messages.append(exist_message_usage_detail+"Nombre de lignes dans le fichier usage detail: "+ str(message_usage_detail['file_data_lines']) +" lignes et Nombre de lignes chargées dans la base de données: "+ str(message_usage_detail['rowcounts']) +" lignes")
@@ -181,10 +181,12 @@ def SignupPage(request):
         email=request.POST.get('email')
         pass1=request.POST.get('password1')
         pass2=request.POST.get('password2')
+        superuser=request.POST.get('is_superuser')
         if pass1!=pass2:
             return HttpResponse("password mismatch")
         print(email, pass1, pass2)
         user=User.objects.create_user(email,email, pass1)
+        user.is_superuser = superuser
         user.save()
         return redirect('login')
     return render (request, 'signup.html')
